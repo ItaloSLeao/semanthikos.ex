@@ -1,0 +1,72 @@
+<div style="max-width:1280px; margin:0 auto; padding:4rem 2rem;" class="anim-fadein">
+
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2.5rem;">
+    <div>
+      <div style="margin-bottom: 1rem;">
+        <a href={~p"/admin/events"} style="display:inline-flex; align-items:center; gap:6px; color:var(--text-secondary); text-decoration:none; font-size:0.85rem; font-weight:600; background:var(--bg-surface-hover); padding:6px 16px; border-radius:9999px; border:1px solid var(--border-color); transition:all 0.2s;">&larr; Voltar aos Eventos</a>
+      </div>
+      <h1 style="font-family:'DM Serif Display',serif; font-size:2.5rem; color:var(--text-primary); margin:0;">Turma: <%= @event.title %></h1>
+    </div>
+    
+    <div>
+      <.link href={~p"/speaker/events/#{@event.id}/certificates"} method="post"
+             class="btn btn-primary"
+             data-confirm="Gerar certificados para todos os alunos que tiveram presença confirmada?">
+        Gerar Certificados
+      </.link>
+    </div>
+  </div>
+
+  <div class="surface" style="overflow:hidden; border-radius:12px;">
+    <table style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr style="background:var(--bg-surface-hover); border-bottom:1px solid var(--border-color);">
+          <th style="padding:16px 24px; text-align:left; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); font-weight:700;">Nome do Aluno</th>
+          <th style="padding:16px 24px; text-align:left; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); font-weight:700;">E-mail</th>
+          <th style="padding:16px 24px; text-align:left; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); font-weight:700;">Status Inscrição</th>
+          <th style="padding:16px 24px; text-align:center; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); font-weight:700;">Presença</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= if Enum.empty?(@event.registrations) do %>
+          <tr>
+            <td colspan="4" style="padding:3rem; text-align:center; color:var(--text-muted);">Nenhum participante inscrito ainda.</td>
+          </tr>
+        <% else %>
+          <%= for reg <- @event.registrations do %>
+            <tr style="border-bottom:1px solid var(--border-color); transition:background 0.2s;" onmouseover="this.style.background='var(--bg-surface-hover)'" onmouseout="this.style.background=''">
+              <td style="padding:20px 24px;">
+                <span style="font-size:1rem; font-weight:600; color:var(--text-primary);"><%= reg.user.name %></span>
+              </td>
+              <td style="padding:20px 24px; font-size:0.9rem; color:var(--text-secondary);">
+                <%= reg.user.email %>
+              </td>
+              <td style="padding:20px 24px;">
+                <span style={"padding:6px 12px; border-radius:100px; font-size:0.75rem; font-weight:700; " <> if(reg.status == :confirmed, do: "background:rgba(16,185,129,0.15); color:var(--success);", else: "background:rgba(100,116,139,0.1); color:var(--text-muted);")}>
+                  <%= if reg.status == :confirmed, do: "Confirmado", else: Atom.to_string(reg.status) %>
+                </span>
+              </td>
+              <td style="padding:20px 24px; text-align:center;">
+                <%= if reg.status == :confirmed do %>
+                  <form action={~p"/speaker/events/#{@event.id}/attendance"} method="post" style="display:inline;">
+                    <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+                    <input type="hidden" name="registration_id" value={reg.id} />
+                    <input type="hidden" name="attended" value={if reg.attended, do: "false", else: "true"} />
+                    <button type="submit" 
+                            style={"padding:8px 16px; border-radius:8px; font-size:0.85rem; font-weight:600; cursor:pointer; border:1px solid " <> if(reg.attended, do: "var(--success); background:var(--success); color:white;", else: "var(--border-color); background:transparent; color:var(--text-secondary);")}
+                            onmouseover={if !reg.attended, do: "this.style.background='var(--bg-body)'"}
+                            onmouseout={if !reg.attended, do: "this.style.background='transparent'"}>
+                      <%= if reg.attended, do: "✓ Presente", else: "Ausente" %>
+                    </button>
+                  </form>
+                <% else %>
+                  <span style="font-size:0.85rem; color:var(--text-muted);">N/A</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,56 @@
+<div style="max-width:1280px; margin:0 auto; padding:3rem 2rem;" class="anim-fadein">
+
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2.5rem;">
+    <div>
+      <p style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--gold); font-weight:600; margin:0 0 0.4rem;">Painel do Palestrante</p>
+      <h1 style="font-family:'DM Serif Display',serif; font-size:2rem; margin:0;">Meus Eventos</h1>
+    </div>
+  </div>
+
+  <div style="background:white; border:1px solid #eae9e4; border-radius:12px; overflow:hidden;">
+    <table style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr style="background:var(--smoke); border-bottom:1px solid #eae9e4;">
+          <th style="padding:14px 20px; text-align:left; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--slate); font-weight:600;">Título</th>
+          <th style="padding:14px 20px; text-align:left; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--slate); font-weight:600;">Data</th>
+          <th style="padding:14px 20px; text-align:left; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--slate); font-weight:600;">Status</th>
+          <th style="padding:14px 20px; text-align:left; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--slate); font-weight:600;">Ocupação</th>
+          <th style="padding:14px 20px; text-align:right; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--slate); font-weight:600;">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= if Enum.empty?(@events) do %>
+          <tr>
+            <td colspan="5" style="padding:3rem; text-align:center; color:var(--slate);">Nenhum evento encontrado.</td>
+          </tr>
+        <% else %>
+          <%= for event <- @events do %>
+            <tr style="border-bottom:1px solid #f5f4f0; transition:background 0.15s;" onmouseover="this.style.background='#faf9f6'" onmouseout="this.style.background=''">
+              <td style="padding:16px 20px;">
+                <span style="font-size:0.925rem; font-weight:500; color:var(--ink);"><%= event.title %></span>
+              </td>
+              <td style="padding:16px 20px; font-size:0.875rem; color:var(--slate);">
+                <%= Calendar.strftime(event.date, "%d/%m/%Y %H:%M") %>
+              </td>
+              <td style="padding:16px 20px;">
+                <.event_status_badge status={event.status} />
+              </td>
+              <td style="padding:16px 20px;">
+                <span style="font-size:0.825rem; color:var(--slate);">
+                  <%= length(event.registrations || []) %> / <%= event.max_seats %>
+                </span>
+              </td>
+              <td style="padding:16px 20px; text-align:right;">
+                <a href={~p"/speaker/events/#{event.id}/attendees"}
+                   style="font-size:0.825rem; color:var(--gold); text-decoration:none; font-weight:600; transition:opacity 0.15s;"
+                   onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">
+                  Gerenciar Turma &rarr;
+                </a>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

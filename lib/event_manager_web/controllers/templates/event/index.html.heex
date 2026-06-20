@@ -1,0 +1,87 @@
+<div style="max-width:1280px; margin:0 auto; padding:4rem 2rem;">
+
+  <%!-- Page header --%>
+  <div class="anim-fadeup" style="margin-bottom:4rem; text-align: center;">
+    <p style="font-size:0.85rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--primary); font-weight:700; margin:0 0 0.5rem;">Catálogo</p>
+    <h1 style="font-family:'DM Serif Display',serif; font-size:3rem; color: var(--text-primary); margin:0 0 1rem;">Eventos Acadêmicos</h1>
+    <p style="color:var(--text-secondary); font-size:1.1rem; max-width: 600px; margin: 0 auto;">Descubra e participe de eventos excepcionais curados pela comunidade acadêmica.</p>
+  </div>
+
+  <%= if length(@events) == 0 do %>
+    <div class="surface" style="padding:6rem 2rem; text-align:center; color:var(--text-muted);">
+      <div style="font-size:3.5rem; margin-bottom:1rem;">📭</div>
+      <p style="font-size:1.1rem; color: var(--text-primary);">Nenhum evento disponível no momento.</p>
+    </div>
+  <% else %>
+    <div style="display:grid; gap:2rem; grid-template-columns:repeat(auto-fill, minmax(360px, 1fr));">
+      <%= for {event, i} <- Enum.with_index(@events) do %>
+        <article class={"surface anim-fadeup anim-delay-#{min(i+1, 4)}"}
+                 style="overflow:hidden; display:flex; flex-direction:column;"
+                 onmouseover="this.style.transform='translateY(-6px)'; this.style.borderColor='var(--primary)'"
+                 onmouseout="this.style.transform=''; this.style.borderColor='var(--border-color)'">
+
+          <%!-- Top status stripe --%>
+          <div style="height:6px; background:linear-gradient(90deg,var(--primary),var(--primary-hover));"></div>
+
+          <div style="padding:2rem; flex:1;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; margin-bottom:1.5rem;">
+              <h3 style="font-family:'DM Serif Display',serif; color:var(--text-primary); font-size:1.4rem; margin:0; line-height:1.3; flex:1;">
+                <%= event.title %>
+              </h3>
+              <.event_status_badge status={event.status} />
+            </div>
+
+            <p style="font-size:0.95rem; color:var(--text-secondary); line-height:1.7; margin:0 0 1.5rem; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;">
+              <%= event.description %>
+            </p>
+
+            <div style="display:flex; flex-direction:column; gap:8px; font-size:0.9rem; color:var(--text-muted); font-weight: 500; margin-bottom:2rem;">
+              <span style="display:flex; align-items:center; gap: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <%= Calendar.strftime(event.date, "%d/%m/%Y %H:%M") %>
+              </span>
+              <span style="display:flex; align-items:center; gap: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                <%= event.location %>
+              </span>
+              <%= if event.speaker do %>
+                <span style="display:flex; align-items:center; gap: 8px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                  <%= event.speaker.name %>
+                </span>
+              <% end %>
+            </div>
+
+            <%!-- Seat progress bar --%>
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--text-secondary); margin-bottom:8px; font-weight: 500;">
+                <span>Vagas disponíveis</span>
+                <span><strong style="color:var(--text-primary);"><%= EventManager.Schemas.Event.remaining_seats(event) %></strong> / <%= event.max_seats %></span>
+              </div>
+              <div style="height:6px; background:var(--bg-body); border-radius:99px; overflow:hidden;">
+                <div style={"width:#{round((1 - EventManager.Schemas.Event.remaining_seats(event)/event.max_seats)*100)}%; height:100%; background:linear-gradient(90deg,var(--primary),var(--primary-hover)); border-radius:99px; transition:width 0.5s;"}></div>
+              </div>
+            </div>
+
+            <%!-- Tags --%>
+            <%= if event.tags && length(event.tags) > 0 do %>
+              <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:1.5rem;">
+                <%= for tag <- event.tags do %>
+                  <span style="font-size:0.75rem; padding:4px 12px; background:var(--bg-body); color:var(--text-secondary); border-radius:100px; border:1px solid var(--border-color); font-weight:600;">
+                    <%= tag %>
+                  </span>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+
+          <div style="padding:1.5rem 2rem; border-top:1px solid var(--border-color); background:var(--bg-surface-hover);">
+            <a href={~p"/events/#{event.id}"} class="btn btn-primary" style="width:100%;">
+              Ver detalhes →
+            </a>
+          </div>
+        </article>
+      <% end %>
+    </div>
+  <% end %>
+</div>

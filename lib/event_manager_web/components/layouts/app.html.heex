@@ -1,0 +1,115 @@
+<%!-- ─── NAVBAR ─────────────────────────────────────────────── --%>
+<header class="glass" style="position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--border-color);">
+  <nav style="max-width:1280px; margin:0 auto; padding:0 2rem; display:flex; align-items:center; justify-content:space-between; height:72px;">
+
+    <%!-- Logo --%>
+    <a href={~p"/"} style="display:flex; align-items:center; gap:12px; text-decoration:none;">
+      <span style="width:36px; height:36px; background:var(--primary); border-radius:10px; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 12px var(--primary-glow);">
+        <svg width="20" height="20" viewBox="0 0 18 18" fill="none">
+          <path d="M9 2L11.2 7H16.5L12.3 10.3L13.8 15.5L9 12.5L4.2 15.5L5.7 10.3L1.5 7H6.8L9 2Z" fill="#ffffff"/>
+        </svg>
+      </span>
+      <span style="font-family:'DM Serif Display',serif; font-size:1.4rem; color:var(--text-primary); letter-spacing:-0.01em;">
+        Seman<span style="color:var(--primary);">thikos</span>
+      </span>
+    </a>
+
+    <%!-- Nav Links --%>
+    <div style="display:flex; align-items:center; gap:0.5rem; background: var(--bg-body); padding: 6px; border-radius: 99px; border: 1px solid var(--border-color); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
+      <a href={~p"/events"} style="font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; color:var(--text-secondary); text-decoration:none; font-size:0.95rem; font-weight:500; padding: 6px 16px; border-radius: 99px; transition:all 0.2s;" onmouseover="this.style.color='var(--text-primary)'; this.style.background='var(--bg-surface-hover)'" onmouseout="this.style.color='var(--text-secondary)'; this.style.background='transparent'">
+        Eventos
+      </a>
+      <%= if @current_user do %>
+        <a href={~p"/my/registrations"} style="font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; color:var(--text-secondary); text-decoration:none; font-size:0.95rem; font-weight:500; padding: 6px 16px; border-radius: 99px; transition:all 0.2s;" onmouseover="this.style.color='var(--text-primary)'; this.style.background='var(--bg-surface-hover)'" onmouseout="this.style.color='var(--text-secondary)'; this.style.background='transparent'">
+          Minhas Inscrições
+        </a>
+        <a href={~p"/my/certificates"} style="font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; color:var(--text-secondary); text-decoration:none; font-size:0.95rem; font-weight:500; padding: 6px 16px; border-radius: 99px; transition:all 0.2s;" onmouseover="this.style.color='var(--text-primary)'; this.style.background='var(--bg-surface-hover)'" onmouseout="this.style.color='var(--text-secondary)'; this.style.background='transparent'">
+          Certificados
+        </a>
+        <%= if @current_user.role == :admin do %>
+          <a href={~p"/admin/events"} style="font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; color:var(--primary); text-decoration:none; font-size:0.95rem; font-weight:600; padding: 6px 16px; border-radius: 99px; transition:all 0.2s; border: 1px solid var(--primary);" onmouseover="this.style.background='var(--primary-glow)'" onmouseout="this.style.background='transparent'">
+            Admin
+          </a>
+        <% end %>
+      <% end %>
+    </div>
+
+    <%!-- Auth area & Theme Toggle --%>
+    <div style="display:flex; align-items:center; gap:1.2rem;">
+      <button onclick="toggleTheme()" class="theme-toggle" aria-label="Toggle Dark Mode" title="Alternar Tema">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+
+      <div style="width:1px; height:24px; background:var(--border-color); margin: 0 0.5rem;"></div>
+
+      <%= if @current_user do %>
+        <a href={~p"/users/settings"} style="display:flex; align-items:center; gap:10px; text-decoration:none; padding: 6px 16px; border-radius: 99px; border: 1px solid var(--border-color); transition:background 0.2s;" onmouseover="this.style.background='var(--bg-surface-hover)'" onmouseout="this.style.background='transparent'" title="Meu Perfil">
+          <span style="font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:0.9rem; color:var(--text-primary); font-weight:500;">
+            <%= @current_user.name %>
+          </span>
+          <.role_badge role={@current_user.role} />
+        </a>
+        
+        <a href={~p"/users/log_out"} data-method="delete" class="btn btn-secondary" style="font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 0.5rem 1rem; font-size: 0.85rem; font-weight:500;">
+          Sair
+        </a>
+      <% else %>
+        <a href={~p"/users/register"} style="font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; color:var(--text-secondary); text-decoration:none; font-size:0.95rem; font-weight: 500; transition:color 0.2s;" onmouseover="this.style.color='var(--text-primary)'" onmouseout="this.style.color='var(--text-secondary)'">
+          Criar conta
+        </a>
+        <a href={~p"/users/log_in"} class="btn btn-primary" style="font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight:600; margin-left: 0.5rem;">
+          Entrar
+        </a>
+      <% end %>
+    </div>
+  </nav>
+</header>
+
+<%!-- ─── FLASH ──────────────────────────────────────────────── --%>
+<div style="max-width:1280px; margin:2rem auto 0; padding:0 2rem;">
+  <.flash kind={:info}    flash={@flash} />
+  <.flash kind={:error}   flash={@flash} />
+  <.flash kind={:warning} flash={@flash} />
+  <.flash kind={:success} flash={@flash} />
+</div>
+
+<%!-- ─── MAIN CONTENT ───────────────────────────────────────── --%>
+<main>
+  <%= @inner_content %>
+</main>
+
+<%!-- ─── FOOTER ─────────────────────────────────────────────── --%>
+<footer style="background:var(--bg-surface); border-top: 1px solid var(--border-color); margin-top:6rem; padding:4rem 2rem;">
+  <div style="max-width:1280px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:2rem;">
+    <div>
+      <span style="font-family:'DM Serif Display',serif; color:var(--text-primary); font-size:1.4rem;">
+        Seman<span style="color:var(--primary);">thikos</span>
+      </span>
+      <p style="color:var(--text-muted); font-size:0.9rem; margin-top:8px;">
+        Sistema de Gerenciamento de Eventos Acadêmicos &copy; 2026
+      </p>
+      <p style="color:var(--text-muted); font-size:0.85rem; margin-top:4px;">
+        Desenvolvido por <a href="https://github.com/ItaloSLeao" target="_blank" style="color:var(--primary); text-decoration:none;">Ítalo Leão</a> 
+        (<a href="mailto:italoleao.dev@gmail.com" style="color:var(--text-muted); text-decoration:underline;">italoleao.dev@gmail.com</a>)
+      </p>
+    </div>
+    <div style="display:flex; gap:2rem;">
+      <a href={~p"/certificates/verify"} style="color:var(--text-muted); font-size:0.95rem; font-weight: 500; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">
+        Verificar autenticidade de Certificado
+      </a>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,83 @@
+<div style="max-width: 900px; margin: 3rem auto; padding: 0 2rem;" class="anim-fadein">
+  <div style="margin-bottom: 3rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem;">
+    <h1 style="font-family: 'DM Serif Display', serif; font-size: 2.2rem; color: var(--text-primary); margin: 0 0 0.5rem;">Meu Perfil</h1>
+    <p style="font-size: 0.95rem; color: var(--text-secondary); margin: 0;">Gerencie suas informações pessoais e acadêmicas.</p>
+  </div>
+
+  <.form for={%{}} as={:user} action={~p"/users/settings"} method="put" multipart={true}>
+    <div style="display: grid; grid-template-columns: 280px 1fr; gap: 3rem;">
+      
+      <%!-- Coluna Esquerda: Avatar e Info Básica --%>
+      <div>
+        <div class="surface" style="padding: 2rem; text-align: center;">
+          <div style="width: 120px; height: 120px; background: var(--bg-body); border-radius: 50%; margin: 0 auto 1.5rem; border: 2px dashed var(--border-color); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;">
+              <%= if @user.avatar_path do %>
+                <img id="avatar-preview" src={@user.avatar_path} style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;" />
+                <svg id="avatar-placeholder" style="display: none;" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              <% else %>
+                <img id="avatar-preview" src="" style="display: none; width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;" />
+                <svg id="avatar-placeholder" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              <% end %>
+          </div>
+          <h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin: 0 0 0.5rem;"><%= @user.name %></h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0 0 1.5rem;"><%= @user.email %></p>
+          
+          <label style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 8px 16px; border: 1px solid var(--border-color); border-radius: 99px; background: var(--bg-surface); font-size: 0.85rem; font-weight: 500; color: var(--text-primary); cursor: pointer; display: inline-block; transition: background 0.2s;" onmouseover="this.style.background='var(--bg-surface-hover)'" onmouseout="this.style.background='var(--bg-surface)'">
+              Alterar Foto
+              <input type="file" name="avatar" accept="image/*" style="display: none;" onchange="previewAvatar(event)" />
+          </label>
+        </div>
+
+        <script>
+          function previewAvatar(event) {
+            const input = event.target;
+            if (input.files && input.files[0]) {
+              const reader = new FileReader();
+              reader.onload = function(e) {
+                const img = document.getElementById('avatar-preview');
+                const placeholder = document.getElementById('avatar-placeholder');
+                img.src = e.target.result;
+                img.style.display = 'block';
+                if(placeholder) placeholder.style.display = 'none';
+              }
+              reader.readAsDataURL(input.files[0]);
+            }
+          }
+        </script>
+      </div>
+
+      <%!-- Coluna Direita: Formulário de Dados --%>
+      <div class="surface" style="padding: 2.5rem;">
+        <h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin: 0 0 1.5rem;">Dados Pessoais</h3>
+        
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <.input name="user[name]" id="user_name" type="text" label="Nome Completo" value={@user.name} required />
+            <.input name="user[cpf]" id="user_cpf" type="text" label="CPF" placeholder="000.000.000-00" value={@user.cpf} />
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2.5rem;">
+            <.input name="user[birth_date]" id="user_birth_date" type="date" label="Data de Nascimento" value={@user.birth_date} />
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <label style="font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:0.95rem; font-weight:500; color:var(--text-primary);">E-mail</label>
+              <input type="email" value={@user.email} disabled class="input-field" style="color:var(--text-muted) !important; cursor: not-allowed; background-color:var(--bg-body) !important;" />
+            </div>
+          </div>
+
+          <h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin: 0 0 1.5rem; border-top: 1px solid var(--border-color); padding-top: 2rem;">Vínculo Acadêmico</h3>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <.input name="user[course]" id="user_course" type="text" label="Curso" value={@user.course} />
+            <.input name="user[department]" id="user_department" type="text" label="Departamento" value={@user.department} />
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+              <.input name="user[registration_id]" id="user_registration_id" type="text" label="Matrícula" placeholder="Ex: 202610123" value={@user.registration_id} />
+          </div>
+          
+          <div style="display: flex; justify-content: flex-end; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+            <button type="submit" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 10px 24px; background: var(--text-primary); color: var(--bg-body); border: none; border-radius: 99px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">Atualizar Perfil</button>
+          </div>
+      </div>
+    </div>
+  </.form>
+</div>

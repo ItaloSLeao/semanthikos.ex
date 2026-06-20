@@ -1,0 +1,30 @@
+<div style="max-width:800px; margin:0 auto; padding:3rem 2rem;" class="anim-fadein">
+  <a href={~p"/admin/events"} style="display:inline-flex; align-items:center; gap:6px; color:var(--text-secondary); text-decoration:none; font-size:0.85rem; font-weight:600; margin-bottom:2rem; background:var(--bg-surface-hover); padding:6px 16px; border-radius:9999px; border:1px solid var(--border-color); transition:all 0.2s;">
+    ← Voltar para Painel Admin
+  </a>
+  <h1 style="font-family:'DM Serif Display',serif; font-size:2.2rem; margin:0 0 2rem;">Editar Evento</h1>
+
+  <div style="background:white; border:1px solid #eae9e4; border-radius:12px; padding:2rem;">
+    <.form :let={f} for={@changeset} action={~p"/admin/events/#{@event.id}"} method="put">
+      <input type="hidden" name="event[speaker_id]" value="1" />
+      <div style="display:flex; flex-direction:column; gap:1.5rem;">
+        <.input name={f[:title].name} id={f[:title].id} value={f[:title].value} type="text" label="Título do Evento" required />
+        <.input name={f[:description].name} id={f[:description].id} value={f[:description].value} type="text" label="Descrição" required />
+        
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+          <.input name={f[:date].name} id={f[:date].id} value={f[:date].value} type="datetime-local" label="Data e Hora" required />
+          <.input name={f[:duration_minutes].name} id={f[:duration_minutes].id} value={f[:duration_minutes].value} type="number" label="Duração (minutos)" required />
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+          <.input name={f[:location].name} id={f[:location].id} value={f[:location].value} type="text" label="Local" required />
+          <.input name={f[:max_seats].name} id={f[:max_seats].id} value={f[:max_seats].value} type="number" label="Máximo de Vagas" required />
+        </div>
+
+        <div style="margin-top: 1rem; text-align: right;">
+          <.button type="submit" variant={:primary}>Salvar Alterações</.button>
+        </div>
+      </div>
+    </.form>
+  </div>
+</div>

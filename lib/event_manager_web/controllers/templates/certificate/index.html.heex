@@ -1,0 +1,45 @@
+<div style="max-width:1280px; margin:0 auto; padding:4rem 2rem;" class="anim-fadein">
+  <%!-- Header and Verification Tool --%>
+  <div style="display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-between; align-items: flex-end; margin-bottom: 4rem; padding-bottom: 3rem; border-bottom: 1px solid var(--border-color);">
+    <div>
+      <p style="font-size:0.85rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--primary); font-weight:700; margin:0 0 0.4rem;">Conquistas</p>
+      <h1 style="font-family:'DM Serif Display',serif; font-size:3rem; color: var(--text-primary); margin:0;">Meus Certificados</h1>
+    </div>
+    
+    <div class="surface" style="padding: 2rem; flex: 1; max-width: 500px;">
+      <h3 style="font-size: 1.1rem; font-weight: 600; margin: 0 0 0.5rem; color: var(--text-primary);">Autenticidade</h3>
+      <p style="font-size: 0.95rem; color: var(--text-secondary); margin: 0 0 1.25rem;">Verifique a validade de um documento emitido.</p>
+      <.form for={%{}} as={:search} action={~p"/certificates/verify"} method="get" style="display: flex; gap: 0.5rem;">
+        <input type="text" name="certificate_number" placeholder="CERT-123-456" required class="input-field" style="flex: 1;" />
+        <button type="submit" class="btn btn-primary">Validar</button>
+      </.form>
+    </div>
+  </div>
+
+  <%!-- Certificates Grid --%>
+  <%= if length(@certificates) == 0 do %>
+    <div class="surface" style="padding:5rem; text-align:center; color:var(--text-muted);">
+      <div style="font-size:3.5rem; margin-bottom:1rem;">📭</div>
+      <p style="font-size:1.1rem; color: var(--text-primary);">Você ainda não possui certificados emitidos.</p>
+    </div>
+  <% else %>
+    <div style="display:grid; gap:2rem; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr));">
+      <%= for cert <- @certificates do %>
+        <div class="surface" style="padding:2.5rem; text-align:center; transition: transform 0.2s, border-color 0.2s;" onmouseover="this.style.transform='translateY(-6px)'; this.style.borderColor='var(--primary)'" onmouseout="this.style.transform=''; this.style.borderColor='var(--border-color)'">
+          <div style="display:flex; justify-content:center; margin-bottom:1.5rem; color:var(--primary);">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="7"></circle>
+              <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+            </svg>
+          </div>
+          <h3 style="font-family:'DM Serif Display',serif; font-size:1.4rem; color: var(--text-primary); margin:0 0 0.5rem;"><%= cert.event.title %></h3>
+          <p style="font-size:0.95rem; color:var(--text-secondary); margin-bottom:0.5rem;">Emitido em: <%= Calendar.strftime(cert.generated_at, "%d/%m/%Y") %></p>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:2rem; font-family: monospace;">Cód: <%= cert.certificate_number %></p>
+          <a href={~p"/my/certificates/#{cert.id}/download"} target="_blank" class="btn btn-secondary" style="display:inline-block; width: 100%; padding: 12px; font-size: 0.95rem; color: var(--primary); border-color: var(--primary);" onmouseover="this.style.background='var(--primary-glow)'" onmouseout="this.style.background='transparent'">
+            Baixar PDF
+          </a>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

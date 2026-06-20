@@ -1,0 +1,65 @@
+<div style="max-width:1280px; margin:0 auto; padding:3rem 2rem;" class="anim-fadein">
+
+  <div style="margin-bottom:2.5rem;">
+    <p style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--gold); font-weight:600; margin:0 0 0.4rem;">Admin</p>
+    <h1 style="font-family:'DM Serif Display',serif; font-size:2rem; margin:0;">Relatórios & Analytics</h1>
+  </div>
+
+  <%!-- Stats grid --%>
+  <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:1.25rem; margin-bottom:2.5rem;">
+    <div class="anim-fadeup anim-delay-1" style="background:var(--ink); border-radius:12px; padding:1.5rem; position:relative; overflow:hidden;">
+      <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(212,165,71,0.15);"></div>
+      <dt style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.07em; color:rgba(255,255,255,0.4); font-weight:500; margin:0 0 0.75rem;">Total de Eventos</dt>
+      <dd style="font-family:'DM Serif Display',serif; font-size:2.5rem; color:var(--gold); margin:0; line-height:1;"><%= @stats.total_events %></dd>
+    </div>
+    <div class="anim-fadeup anim-delay-2" style="background:var(--ink); border-radius:12px; padding:1.5rem; position:relative; overflow:hidden;">
+      <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(78,201,176,0.1);"></div>
+      <dt style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.07em; color:rgba(255,255,255,0.4); font-weight:500; margin:0 0 0.75rem;">Total de Usuários</dt>
+      <dd style="font-family:'DM Serif Display',serif; font-size:2.5rem; color:var(--cyan); margin:0; line-height:1;"><%= @stats.total_users %></dd>
+    </div>
+    <div class="anim-fadeup anim-delay-3" style="background:var(--ink); border-radius:12px; padding:1.5rem; position:relative; overflow:hidden;">
+      <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.04);"></div>
+      <dt style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.07em; color:rgba(255,255,255,0.4); font-weight:500; margin:0 0 0.75rem;">Inscrições</dt>
+      <dd style="font-family:'DM Serif Display',serif; font-size:2.5rem; color:white; margin:0; line-height:1;"><%= @stats.total_registrations %></dd>
+    </div>
+    <div class="anim-fadeup anim-delay-4" style="background:var(--ink); border-radius:12px; padding:1.5rem; position:relative; overflow:hidden;">
+      <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(212,165,71,0.08);"></div>
+      <dt style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.07em; color:rgba(255,255,255,0.4); font-weight:500; margin:0 0 0.75rem;">Eventos em Breve</dt>
+      <dd style="font-family:'DM Serif Display',serif; font-size:2.5rem; color:var(--gold-pale); margin:0; line-height:1;"><%= @stats.upcoming_events %></dd>
+    </div>
+  </div>
+
+  <%!-- Action cards --%>
+  <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:1.25rem;">
+    <div style="background:white; border:1px solid #eae9e4; border-radius:12px; overflow:hidden;">
+      <div style="padding:1.25rem 1.5rem; border-bottom:1px solid #f0ede8; background:var(--smoke);">
+        <h2 style="font-size:0.95rem; font-weight:600; margin:0;">Exportar Dados</h2>
+      </div>
+      <div style="padding:1.5rem;">
+        <a href={~p"/admin/reports/export/csv?type=events"}
+           style="display:block; padding:12px 20px; background:var(--ink); color:white; border-radius:8px; text-align:center; text-decoration:none; font-size:0.875rem; font-weight:500; transition:background 0.2s;"
+           onmouseover="this.style.background='var(--ink-muted)'" onmouseout="this.style.background='var(--ink)'">
+          ↓ &nbsp; Exportar Eventos (CSV)
+        </a>
+      </div>
+    </div>
+
+    <div style="background:white; border:1px solid #eae9e4; border-radius:12px; overflow:hidden;">
+      <div style="padding:1.25rem 1.5rem; border-bottom:1px solid #f0ede8; background:var(--smoke);">
+        <h2 style="font-size:0.95rem; font-weight:600; margin:0;">Relatórios</h2>
+      </div>
+      <div style="padding:1.5rem; display:flex; flex-direction:column; gap:0.75rem;">
+        <a href={~p"/admin/reports/occupancy"}
+           style="display:block; padding:12px 20px; background:var(--smoke); color:var(--ink); border:1px solid #eae9e4; border-radius:8px; text-decoration:none; font-size:0.875rem; font-weight:500; transition:border-color 0.2s, background 0.2s;"
+           onmouseover="this.style.borderColor='var(--gold)'; this.style.background='#fdf8ee'" onmouseout="this.style.borderColor='#eae9e4'; this.style.background='var(--smoke)'">
+          📊 &nbsp; Taxa de Ocupação
+        </a>
+        <a href={~p"/admin/reports/participation"}
+           style="display:block; padding:12px 20px; background:var(--smoke); color:var(--ink); border:1px solid #eae9e4; border-radius:8px; text-decoration:none; font-size:0.875rem; font-weight:500; transition:border-color 0.2s, background 0.2s;"
+           onmouseover="this.style.borderColor='var(--gold)'; this.style.background='#fdf8ee'" onmouseout="this.style.borderColor='#eae9e4'; this.style.background='var(--smoke)'">
+          🎓 &nbsp; Participação por Curso
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

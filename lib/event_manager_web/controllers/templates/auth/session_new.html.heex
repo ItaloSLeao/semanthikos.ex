@@ -1,0 +1,203 @@
+<style>
+    .login-container {
+        --ink: #0d0f1a;
+        --ink-soft: #1e2130;
+        --paper: #faf9f6;
+        --gold: #d4a547;
+        --slate: #6b7280;
+        --border: #eae9e4;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        
+        font-family: 'DM Sans', sans-serif;
+        background-color: var(--paper);
+        color: var(--ink);
+        height: 100vh;
+        width: 100vw;
+        position: fixed;
+        top: 0;
+        left: 0;
+        display: flex;
+        z-index: 9999;
+    }
+
+    .form-side {
+        flex: 0 0 45%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 4rem 12%;
+        background: var(--paper);
+        position: relative;
+    }
+
+    .logo {
+        position: absolute;
+        top: 3rem;
+        left: 12%;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+    }
+
+    .logo-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--gold);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .logo-text {
+        font-family: 'DM Serif Display', serif;
+        font-size: 1.4rem;
+        color: var(--ink);
+        letter-spacing: -0.01em;
+    }
+
+    .auth-header { margin-bottom: 2.5rem; }
+    .auth-header h1 { font-family: 'DM Serif Display', serif; font-size: 2.8rem; line-height: 1.1; margin-bottom: 0.5rem; color: var(--ink); }
+    .auth-header p { color: var(--slate); font-size: 1rem; line-height: 1.6; }
+
+    .input-group { position: relative; margin-bottom: 1.5rem; }
+    
+    .input-field {
+        width: 100%;
+        padding: 1.25rem 1rem 0.75rem;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 1rem;
+        color: var(--ink);
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        outline: none;
+        transition: var(--transition);
+    }
+
+    .input-field:focus,
+    .input-field:not(:placeholder-shown) {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 4px rgba(212, 165, 71, 0.1);
+    }
+
+    .input-label {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--slate);
+        font-size: 1rem;
+        pointer-events: none;
+        transition: var(--transition);
+    }
+
+    .input-field:focus ~ .input-label,
+    .input-field:not(:placeholder-shown) ~ .input-label {
+        top: 0.6rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--gold);
+        text-transform: uppercase;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 1.1rem;
+        background: var(--ink);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .btn-primary:hover {
+        background: var(--ink-soft);
+        transform: translateY(-2px);
+    }
+
+    .brand-side {
+        flex: 0 0 55%;
+        background-color: var(--ink);
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4rem;
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 24px;
+        padding: 4rem;
+        max-width: 600px;
+        z-index: 2;
+    }
+
+    .glass-card h2 { font-family: 'DM Serif Display', serif; font-size: 3.5rem; color: white; line-height: 1.1; margin-bottom: 1.5rem; }
+    .glass-card p { color: rgba(255, 255, 255, 0.6); font-size: 1.1rem; line-height: 1.7; }
+    
+    @media (max-width: 768px) {
+        .brand-side { display: none; }
+        .form-side { flex: 1; padding: 6rem 5% 4rem; }
+    }</style>
+
+<div class="login-container">
+    <div class="form-side">
+        <a href={~p"/"} class="logo">
+            <div class="logo-icon">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <path d="M9 2L11.2 7H16.5L12.3 10.3L13.8 15.5L9 12.5L4.2 15.5L5.7 10.3L1.5 7H6.8L9 2Z" fill="#0d0f1a"/>
+                </svg>
+            </div>
+            <div class="logo-text">Seman<span style="color: var(--gold);">thikos</span></div>
+        </a>
+
+        <div class="auth-header">
+            <h1>Bem-vindo de volta.</h1>
+            <p>Acesse o painel para gerenciar e interagir com seus eventos.</p>
+        </div>
+
+        <%= if @error_message do %>
+            <div style="background: #fef2f2; color: #b91c1c; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem;">
+                <%= @error_message %>
+            </div>
+        <% end %>
+
+        <.form for={%{}} as={:user} action={~p"/users/log_in"}>
+            <div class="input-group">
+                <input type="email" name="user[email]" id="user_email" class="input-field" placeholder=" " required autocomplete="email">
+                <label for="user_email" class="input-label">E-mail Institucional</label>
+            </div>
+
+            <div class="input-group">
+                <input type="password" name="user[password]" id="user_password" class="input-field" placeholder=" " required autocomplete="current-password">
+                <label for="user_password" class="input-label">Senha de Acesso</label>
+            </div>
+
+            <button type="submit" class="btn-primary">Acessar Plataforma</button>
+        </.form>
+        
+        <div style="margin-top: 2rem; text-align: center; font-size: 0.95rem; color: var(--slate);">
+            Novo por aqui? <a href={~p"/users/register"} style="color: var(--gold); font-weight: 600; text-decoration: none;">Crie sua conta</a>
+        </div>
+    </div>
+
+    <div class="brand-side">
+        <div class="glass-card">
+            <div style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; background: rgba(212, 165, 71, 0.1); border: 1px solid rgba(212, 165, 71, 0.2); border-radius: 100px; color: var(--gold); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 2rem;">
+                <span style="width:6px;height:6px;background:var(--gold);border-radius:50%;display:inline-block;"></span>
+                Gestão Acadêmica
+            </div>
+            <h2>Seus eventos acadêmicos<br>em um <em style="color: var(--gold); font-style: italic;">só lugar</em>.</h2>
+            <p>O ecossistema definitivo para planejamento, interação em tempo real e emissão de certificados das suas jornadas universitárias.</p>
+        </div>
+    </div>
+</div>

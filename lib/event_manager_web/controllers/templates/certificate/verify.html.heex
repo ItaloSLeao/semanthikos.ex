@@ -1,0 +1,43 @@
+<div style="max-width: 600px; margin: 4rem auto; padding: 3rem; border-radius: 16px;" class="surface anim-fadein">
+  <div style="text-align: center; margin-bottom: 2.5rem;">
+    <div style="font-size: 3.5rem; margin-bottom: 1rem;">🛡️</div>
+    <h1 style="font-family: 'DM Serif Display', serif; font-size: 2.2rem; color: var(--text-primary); margin: 0 0 0.5rem;">Verificar Certificado</h1>
+    <p style="font-size: 1rem; color: var(--text-secondary); margin: 0;">Valide a autenticidade de um certificado emitido pelo Semanthikos</p>
+  </div>
+
+  <.form for={%{}} as={:search} action={~p"/certificates/verify"} method="get">
+    <div style="display: flex; flex-direction: column; gap: 1rem;">
+      <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+        <label for="certificate_number" style="font-size: 0.9rem; font-weight: 600; color: var(--text-primary);">Código do Certificado</label>
+        <input name="certificate_number" id="certificate_number" type="text" value={assigns[:certificate_number]} placeholder="Ex: CERT-123-456-789" required class="input-field" style="padding: 14px 16px; font-size: 1rem;" />
+      </div>
+      <div style="margin-top: 1rem;">
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 1rem; font-weight: 600;">Verificar Validade</button>
+      </div>
+    </div>
+  </.form>
+
+  <%= if @verified == true do %>
+    <div style="margin-top: 2.5rem; padding: 1.5rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px;" class="anim-fadeup">
+      <h3 style="color: var(--success); margin: 0 0 1rem; display: flex; align-items: center; gap: 8px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        Certificado Válido
+      </h3>
+      <div style="font-size: 0.95rem; color: var(--text-primary); display: flex; flex-direction: column; gap: 0.6rem;">
+        <p style="margin: 0;"><strong style="color:var(--text-secondary);">Participante:</strong> <%= @result.user_name %></p>
+        <p style="margin: 0;"><strong style="color:var(--text-secondary);">Evento:</strong> <%= @result.event_title %></p>
+        <p style="margin: 0;"><strong style="color:var(--text-secondary);">Emitido em:</strong> <%= Calendar.strftime( @result.generated_at, "%d/%m/%Y") %></p>
+      </div>
+    </div>
+  <% end %>
+
+  <%= if @verified == false do %>
+    <div style="margin-top: 2.5rem; padding: 1.5rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 12px;" class="anim-fadeup">
+      <h3 style="color: var(--danger); margin: 0 0 0.5rem; display: flex; align-items: center; gap: 8px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+        Certificado Inválido
+      </h3>
+      <p style="font-size: 0.95rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">Não encontramos nenhum certificado com este código em nossa base de dados. Verifique se o código foi digitado corretamente.</p>
+    </div>
+  <% end %>
+</div>

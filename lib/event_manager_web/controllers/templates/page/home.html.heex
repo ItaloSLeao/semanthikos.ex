@@ -1,0 +1,146 @@
+<%!-- ─── HERO ───────────────────────────────────────────────── --%>
+<section style="background:var(--bg-body); padding:7rem 2rem 5rem; position:relative; overflow:hidden; border-bottom: 1px solid var(--border-color);">
+  <%!-- Decorative background shapes --%>
+  <div style="position:absolute; inset:0; pointer-events:none; overflow:hidden;">
+    <div style="position:absolute; top:-80px; right:-120px; width:560px; height:560px; border-radius:50%; background:radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);"></div>
+    <div style="position:absolute; bottom:-60px; left:-80px; width:400px; height:400px; border-radius:50%; background:radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%);"></div>
+    <%!-- Subtle grid lines --%>
+    <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.04;" xmlns="http://www.w3.org/2000/svg">
+      <defs><pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+        <path d="M 48 0 L 0 0 0 48" fill="none" stroke="currentColor" stroke-width="0.5"/>
+      </pattern></defs>
+      <rect width="100%" height="100%" fill="url(#grid)" />
+    </svg>
+  </div>
+
+  <div style="max-width:1280px; margin:0 auto; position:relative;">
+    <div style="max-width:680px;" class="anim-fadeup">
+      <div style="display:inline-flex; align-items:center; gap:8px; background:var(--primary-glow); border:1px solid rgba(59, 130, 246, 0.2); border-radius:100px; padding:6px 16px; margin-bottom:2rem;">
+        <span style="width:8px;height:8px;border-radius:50%;background:var(--primary);display:inline-block;box-shadow: 0 0 8px var(--primary);"></span>
+        <span style="font-size:0.85rem; color:var(--primary); font-weight:600; letter-spacing:0.05em; text-transform:uppercase;">Plataforma Acadêmica Inovadora</span>
+      </div>
+      <h1 style="font-family:'DM Serif Display',serif; font-size:clamp(2.4rem,5vw,4.2rem); color:var(--text-primary); line-height:1.12; margin:0 0 1.5rem;">
+        Seus eventos acadêmicos<br/>
+        em um <em style="color:var(--primary); font-style:italic;">só lugar</em>.
+      </h1>
+      <p style="font-size:1.15rem; color:var(--text-secondary); max-width:520px; line-height:1.7; margin:0 0 2.5rem;">
+        Descubra eventos incríveis, interaja com palestrantes em tempo real e colecione certificados para construir o seu currículo.
+      </p>
+      <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+        <a href={~p"/events"} class="btn btn-primary" style="padding: 16px 36px; font-size: 1rem;">
+          Explorar Eventos
+        </a>
+        <%= if ! @current_user do %>
+          <a href={~p"/users/register"} class="btn btn-secondary" style="padding: 16px 36px; font-size: 1rem;">
+            Criar Conta Grátis
+          </a>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%!-- ─── STATS BAR ──────────────────────────────────────────── --%>
+<section style="background:var(--bg-surface); border-bottom:1px solid var(--border-color);">
+  <div style="max-width:1280px; margin:0 auto; padding:0 2rem; display:grid; grid-template-columns:repeat(4,1fr);">
+    <div class="anim-fadeup anim-delay-1" style="padding:2.5rem 2rem; border-right:1px solid var(--border-color); text-align:center;">
+      <div style="font-family:'DM Serif Display',serif; font-size:3rem; color:var(--primary);"><%= @stats.total_events %></div>
+      <div style="font-size:0.85rem; color:var(--text-muted); margin-top:8px; font-weight: 600; text-transform:uppercase; letter-spacing:0.06em;">Eventos Totais</div>
+    </div>
+    <div class="anim-fadeup anim-delay-2" style="padding:2.5rem 2rem; border-right:1px solid var(--border-color); text-align:center;">
+      <div style="font-family:'DM Serif Display',serif; font-size:3rem; color:var(--success);"><%= @stats.total_registrations %></div>
+      <div style="font-size:0.85rem; color:var(--text-muted); margin-top:8px; font-weight: 600; text-transform:uppercase; letter-spacing:0.06em;">Inscrições</div>
+    </div>
+    <div class="anim-fadeup anim-delay-3" style="padding:2.5rem 2rem; border-right:1px solid var(--border-color); text-align:center;">
+      <div style="font-family:'DM Serif Display',serif; font-size:3rem; color:var(--text-primary);"><%= @stats.total_users %></div>
+      <div style="font-size:0.85rem; color:var(--text-muted); margin-top:8px; font-weight: 600; text-transform:uppercase; letter-spacing:0.06em;">Participantes</div>
+    </div>
+    <div class="anim-fadeup anim-delay-4" style="padding:2.5rem 2rem; text-align:center;">
+      <div style="font-family:'DM Serif Display',serif; font-size:3rem; color:var(--warning);"><%= @stats.upcoming_events %></div>
+      <div style="font-size:0.85rem; color:var(--text-muted); margin-top:8px; font-weight: 600; text-transform:uppercase; letter-spacing:0.06em;">Em Breve</div>
+    </div>
+  </div>
+</section>
+
+<%!-- ─── UPCOMING EVENTS ────────────────────────────────────── --%>
+<section style="padding:6rem 2rem; background: var(--bg-body);">
+  <div style="max-width:1280px; margin:0 auto;">
+    <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4rem;">
+      <h2 style="font-family:'DM Serif Display',serif; font-size:2.5rem; color: var(--text-primary); margin:0;">Próximos Eventos</h2>
+      <a href={~p"/events"} style="color:var(--primary); text-decoration:none; font-size:1rem; font-weight:600; display:flex; align-items:center; gap:5px; transition: gap 0.2s;" onmouseover="this.style.gap='8px'" onmouseout="this.style.gap='5px'">
+        Ver todos <span>→</span>
+      </a>
+    </div>
+
+    <%= if length(@events) == 0 do %>
+      <div class="surface" style="padding:5rem; text-align:center; color:var(--text-muted);">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">🗓️</div>
+        <h3 style="margin-bottom: 0.5rem; color: var(--text-primary);">Nenhum evento agendado</h3>
+        <p>Acompanhe novidades em breve.</p>
+      </div>
+    <% else %>
+      <div style="display:grid; gap:2rem; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr));">
+        <%= for {event, i} <- Enum.with_index(@events) do %>
+          <a href={~p"/events/#{event.id}"} class={"surface anim-fadeup anim-delay-#{min(i+1, 4)}"}
+             style="display:block; text-decoration:none; color:inherit; overflow: hidden; position: relative;"
+             onmouseover="this.style.transform='translateY(-6px)'; this.style.borderColor='var(--primary)'"
+             onmouseout="this.style.transform=''; this.style.borderColor='var(--border-color)'">
+            <%!-- Color accent bar based on status --%>
+            <div style="height:6px; background:linear-gradient(90deg, var(--primary), var(--primary-hover));"></div>
+            <div style="padding:2rem;">
+              <h3 style="font-family:'DM Serif Display',serif; font-size:1.4rem; color: var(--text-primary); margin:0 0 1rem; line-height:1.3;">
+                <%= event.title %>
+              </h3>
+              <p style="font-size:0.95rem; color:var(--text-secondary); line-height:1.6; margin:0 0 1.5rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
+                <%= event.description %>
+              </p>
+              <div style="display:flex; flex-direction:column; gap:8px; font-size:0.9rem; color:var(--text-muted); font-weight: 500;">
+                <span style="display:flex; align-items:center; gap: 8px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  <%= Calendar.strftime(event.date, "%d/%m/%Y %H:%M") %>
+                </span>
+                <span style="display:flex; align-items:center; gap: 8px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                  <%= event.location %>
+                </span>
+              </div>
+            </div>
+            <div style="padding:1.2rem 2rem; background: var(--bg-surface-hover); border-top:1px solid var(--border-color); display:flex; justify-content:flex-end;">
+              <span style="font-size:0.9rem; color:var(--primary); font-weight:600;">Ver detalhes →</span>
+            </div>
+          </a>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</section>
+
+<%!-- ─── FEATURES ───────────────────────────────────────────── --%>
+<section style="background:var(--bg-surface); border-top: 1px solid var(--border-color); padding:6rem 2rem;">
+  <div style="max-width:1280px; margin:0 auto;">
+    <h2 style="font-family:'DM Serif Display',serif; font-size:2.5rem; text-align:center; color: var(--text-primary); margin:0 0 4rem;">Experiência Completa</h2>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:2.5rem;">
+
+      <%= if @current_user && @current_user.role in [:admin, :speaker] do %>
+        <a href={~p"/admin/events"} class="surface anim-fadeup anim-delay-1" style="display:block; text-decoration:none; padding:2.5rem;" onmouseover="this.style.transform='translateY(-6px)'; this.style.borderColor='var(--primary)'" onmouseout="this.style.transform=''; this.style.borderColor='var(--border-color)'">
+          <div style="width:56px; height:56px; background:var(--primary-glow); color:var(--primary); border-radius:12px; display:flex; align-items:center; justify-content:center; margin-bottom:1.5rem; font-size:1.5rem;">📅</div>
+          <h3 style="font-family:'DM Serif Display',serif; font-size:1.4rem; color: var(--text-primary); margin:0 0 1rem;">Gestão de Eventos</h3>
+          <p style="font-size:1rem; color:var(--text-secondary); line-height:1.7; margin:0;">Crie e gerencie eventos acadêmicos com controle inteligente de vagas e painéis de controle em tempo real.</p>
+        </a>
+      <% end %>
+
+      <a href={~p"/my/registrations"} class="surface anim-fadeup anim-delay-2" style="display:block; text-decoration:none; padding:2.5rem;" onmouseover="this.style.transform='translateY(-6px)'; this.style.borderColor='var(--primary)'" onmouseout="this.style.transform=''; this.style.borderColor='var(--border-color)'">
+        <div style="width:56px; height:56px; background:var(--primary-glow); color:var(--primary); border-radius:12px; display:flex; align-items:center; justify-content:center; margin-bottom:1.5rem; font-size:1.5rem;">💬</div>
+        <h3 style="font-family:'DM Serif Display',serif; font-size:1.4rem; color: var(--text-primary); margin:0 0 1rem;">Interatividade Ao Vivo</h3>
+        <p style="font-size:1rem; color:var(--text-secondary); line-height:1.7; margin:0;">Interaja com palestrantes e faça perguntas relevantes durante os eventos através de nosso chat em tempo real.</p>
+      </a>
+
+      <a href={~p"/my/certificates"} class="surface anim-fadeup anim-delay-3" style="display:block; text-decoration:none; padding:2.5rem;" onmouseover="this.style.transform='translateY(-6px)'; this.style.borderColor='var(--primary)'" onmouseout="this.style.transform=''; this.style.borderColor='var(--border-color)'">
+        <div style="width:56px; height:56px; background:var(--primary-glow); color:var(--primary); border-radius:12px; display:flex; align-items:center; justify-content:center; margin-bottom:1.5rem; font-size:1.5rem;">🎓</div>
+        <h3 style="font-family:'DM Serif Display',serif; font-size:1.4rem; color: var(--text-primary); margin:0 0 1rem;">Certificados Automatizados</h3>
+        <p style="font-size:1rem; color:var(--text-secondary); line-height:1.7; margin:0;">Receba seus certificados de participação automaticamente ao fim de cada evento, prontos para impressão.</p>
+      </a>
+
+    </div>
+  </div>
+</section>
