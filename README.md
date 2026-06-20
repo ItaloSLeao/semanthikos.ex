@@ -1,4 +1,4 @@
-# Event Manager - Sistema de Gerenciamento de Eventos Acadêmicos
+# Semanthykos - Event Manager
 
 ![Elixir](https://img.shields.io/badge/Elixir-1.14+-purple.svg)
 ![Phoenix](https://img.shields.io/badge/Phoenix-1.7-blue.svg)
@@ -6,20 +6,6 @@
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
 Sistema completo de gerenciamento de eventos acadêmicos desenvolvido em **Elixir** com **Phoenix Framework**, seguindo os requisitos da disciplina de Paradigmas de Linguagens de Programação (PLP).
-
-## Índice
-
-- [Visão Geral](#visão-geral)
-- [Stack Tecnológica](#stack-tecnológica)
-- [Arquitetura](#arquitetura)
-- [Funcionalidades](#funcionalidades)
-- [Instalação](#instalação)
-- [Configuração](#configuração)
-- [Uso](#uso)
-- [API](#api)
-- [Testes](#testes)
-- [Deploy](#deploy)
-- [Critérios de Avaliação](#critérios-de-avaliação)
 
 ## Visão Geral
 
@@ -190,7 +176,7 @@ Três níveis de acesso:
 
 ```bash
 # Clone o repositório
-git clone https://github.com/seu-usuario/event_manager.git
+git clone https://github.com/ItaloSLeao/semanthykos-ex.git
 cd event_manager
 
 # Instale as dependências
@@ -213,49 +199,6 @@ mix phx.server
 ```
 
 Acesse: http://localhost:4000
-
-### Usuários de Teste (após seeds)
-
-| Email | Senha | Papel |
-|-------|-------|-------|
-| admin@eventmanager.com | Admin@123 | Admin |
-| professor@universidade.edu.br | Speaker@123 | Palestrante |
-| aluno1@universidade.edu.br | Student@123 | Estudante |
-
-## Configuração
-
-### Variáveis de Ambiente (Produção)
-
-```bash
-# Banco de dados
-export DATABASE_URL="ecto://user:pass@host/db"
-export POOL_SIZE="15"
-
-# Segurança
-export SECRET_KEY_BASE="sua-chave-secreta"
-export PHX_HOST="seusite.com"
-
-# Email
-export SMTP_RELAY="smtp.example.com"
-export SMTP_USERNAME="user"
-export SMTP_PASSWORD="pass"
-```
-
-### Nginx
-
-```bash
-# Copie a configuração
-sudo cp priv/nginx/nginx.conf /etc/nginx/sites-available/event_manager
-sudo ln -s /etc/nginx/sites-available/event_manager /etc/nginx/sites-enabled/
-
-# Configure SSL
-sudo certbot --nginx -d eventmanager.example.com
-
-# Reinicie
-sudo nginx -t && sudo systemctl restart nginx
-```
-
-## Uso
 
 ### Comandos Principais
 
@@ -282,36 +225,6 @@ mix format
 mix compile --warnings-as-errors
 ```
 
-### Criando um Evento (Admin)
-
-1. Acesse `/admin/events/new`
-2. Preencha os dados do evento
-3. Selecione o palestrante
-4. Salve como rascunho ou publique
-
-### Inscrevendo-se em Evento
-
-1. Acesse `/events`
-2. Escolha um evento
-3. Clique em "Inscrever-se"
-4. Confirme a inscrição
-
-### Chat ao Vivo
-
-1. Inscreva-se no evento
-2. Acesse `/events/:id/chat`
-3. Envie mensagens ou perguntas em tempo real
-
-## API
-
-### Endpoints REST
-
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| GET | `/api/events` | Lista eventos públicos |
-| GET | `/api/events/:id` | Detalhes de um evento |
-| GET | `/api/events/:id/stats` | Estatísticas do evento |
-
 ### WebSocket
 
 ```javascript
@@ -333,74 +246,7 @@ channel.on("new_message", payload => {
 })
 ```
 
-## Testes
-
-```bash
-# Executar todos os testes
-mix test
-
-# Teste específico
-mix test test/event_manager/events_test.exs
-
-# Teste com coverage
-mix test --cover
-
-# Teste em modo watch
-mix test --stale --listen-stdin
 ```
-
-### Estrutura de Testes
-
-```
-test/
-├── event_manager/           # Testes de contextos
-│   ├── accounts_test.exs
-│   ├── events_test.exs
-│   └── certificates_test.exs
-├── event_manager_web/       # Testes de controllers
-│   ├── controllers/
-│   └── channels/
-└── support/                 # Factories e helpers
-    ├── factory.ex
-    └── fixtures.ex
-```
-
-## Deploy
-
-### Docker
-
-```dockerfile
-FROM elixir:1.14-alpine
-
-WORKDIR /app
-COPY . .
-
-RUN mix local.hex --force && \
-    mix local.rebar --force && \
-    mix deps.get --only prod && \
-    mix compile
-
-CMD ["mix", "phx.server"]
-```
-
-### Release
-
-```bash
-# Gerar release
-MIX_ENV=prod mix release
-
-# Executar
-_build/prod/rel/event_manager/bin/event_manager start
-```
-
-## Critérios de Avaliação
-
-| Critério | Peso | Implementação |
-|----------|------|---------------|
-| **Features e qualidade do código** | 40% | ✅ Todas as funcionalidades implementadas |
-| **Uso adequado da stack** | 30% | ✅ Elixir/Phoenix + PostgreSQL + Nginx |
-| **Trabalho em equipe** | 20% | 📋 Git flow, divisão de tarefas |
-| **Documentação** | 10% | 📖 README, comentários no código |
 
 ### Checklist de Features
 
@@ -440,6 +286,4 @@ MIT License - veja [LICENSE](LICENSE) para detalhes.
 - **Disciplina**: Paradigmas de Linguagens de Programação (PLP)
 - **Grupo**: [Adicionar nomes dos integrantes]
 
----
-
-Desenvolvido com ❤️ e Elixir no curso de Ciência da Computação.
+```
