@@ -18,24 +18,6 @@ Este sistema permite a gestão completa de eventos acadêmicos, incluindo:
 - **Dashboards e relatórios** com visualizações gráficas
 - **Controle de acesso** baseado em papéis (RBAC)
 
-## Stack Tecnológica
-
-| Camada | Tecnologia | Justificativa |
-|--------|-----------|---------------|
-| **Backend** | Elixir + Phoenix Framework | Alta concorrência, tolerância a falhas, modelo de atores |
-| **Banco de Dados** | PostgreSQL | Suporte a transações complexas, full-text search |
-| **Web Server** | Nginx | Proxy reverso, serving de arquivos estáticos, SSL |
-| **Frontend** | Phoenix LiveView | UI reativa sem JavaScript client-side |
-| **Tempo Real** | Phoenix Channels | WebSockets para chat e notificações |
-
-### Por que Elixir/Phoenix?
-
-1. **Concorrência Massiva**: O modelo de atores do Erlang VM permite milhares de conexões WebSocket simultâneas
-2. **Tolerância a Falhas**: Supervisores garantem que o sistema se recupere automaticamente de erros
-3. **Hot Code Reloading**: Atualizações sem downtime
-4. **Latência Baixa**: Processos leves com baixo overhead de memória
-5. **LiveView**: Interface reativa sem necessidade de SPA frameworks
-
 ## Arquitetura
 
 ```
@@ -162,16 +144,6 @@ Três níveis de acesso:
 - Estatísticas mensais
 - Exportação CSV
 
-## Instalação
-
-### Pré-requisitos
-
-- Elixir 1.14+
-- Erlang/OTP 25+
-- PostgreSQL 14+
-- Node.js 18+ (para assets)
-- Nginx (produção)
-
 ### Setup Local
 
 ```bash
@@ -223,67 +195,4 @@ mix format
 
 # Verificar warnings
 mix compile --warnings-as-errors
-```
-
-### WebSocket
-
-```javascript
-// Conectar ao canal de chat
-let socket = new Socket("/socket", {params: {token: userToken}})
-socket.connect()
-
-let channel = socket.channel("event_chat:123", {})
-channel.join()
-  .receive("ok", resp => console.log("Joined successfully", resp))
-  .receive("error", resp => console.log("Unable to join", resp))
-
-// Enviar mensagem
-channel.push("new_message", {message: "Olá!", is_question: false})
-
-// Receber mensagens
-channel.on("new_message", payload => {
-  console.log(`${payload.user_name}: ${payload.message}`)
-})
-```
-
-```
-
-### Checklist de Features
-
-- [x] Autenticação com 3 papéis (admin, speaker, student)
-- [x] Autorização RBAC
-- [x] CRUD de eventos com validações
-- [x] Sistema de inscrições com controle de vagas
-- [x] Chat em tempo real (Phoenix Channels)
-- [x] Notificações em tempo real
-- [x] Geração de certificados PDF
-- [x] Verificação de certificados
-- [x] Dashboards com estatísticas
-- [x] Relatórios por curso/departamento
-- [x] Exportação CSV
-- [x] Full-text search (PostgreSQL)
-- [x] Nginx como proxy reverso
-- [x] SSL/HTTPS
-- [x] WebSocket support
-- [x] Rate limiting
-- [x] Testes automatizados
-
-## Contribuição
-
-1. Fork o projeto
-2. Crie uma branch (`git checkout -b feature/nova-feature`)
-3. Commit suas mudanças (`git commit -m 'Adiciona nova feature'`)
-4. Push para a branch (`git push origin feature/nova-feature`)
-5. Abra um Pull Request
-
-## Licença
-
-MIT License - veja [LICENSE](LICENSE) para detalhes.
-
-## Autores
-
-- **Professor(a)**: Maria Luisa Ghizoni Gonzalez, Roque Mendes Prado Trindade
-- **Disciplina**: Paradigmas de Linguagens de Programação (PLP)
-- **Grupo**: [Adicionar nomes dos integrantes]
-
 ```
