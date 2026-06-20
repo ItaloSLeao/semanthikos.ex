@@ -1,0 +1,44 @@
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Dependencies
+/deps/
+/node_modules/
+
+# Build artifacts
+/_build/
+/dist/
+
+# Database
+*.dump
+
+# Logs
+/logs/
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets (never commit these)
+*.pem
+*.key
+config/prod.secret.exs
+
+# Uploaded files (development)
+/uploads/
+
+# Coverage
+/cover/
+
+# Cache
+.cache/
