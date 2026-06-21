@@ -5,7 +5,7 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-blue.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-Sistema completo de gerenciamento de eventos acadêmicos desenvolvido em **Elixir** com **Phoenix Framework**, seguindo os requisitos da disciplina de Paradigmas de Linguagens de Programação (PLP).
+Sistema de gerenciamento de eventos acadêmicos desenvolvido em **Elixir** com **Phoenix Framework**, seguindo os requisitos da disciplina de Paradigmas de Linguagens de Programação (PLP).
 
 ## Visão Geral
 
@@ -17,43 +17,6 @@ Este sistema permite a gestão completa de eventos acadêmicos, incluindo:
 - **Geração automática de certificados** em PDF
 - **Dashboards e relatórios** com visualizações gráficas
 - **Controle de acesso** baseado em papéis (RBAC)
-
-## Arquitetura
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                          Nginx                                  │
-│  (SSL Termination, Static Files, Reverse Proxy, Load Balancer) │
-└─────────────────────────────────────────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    Phoenix Endpoint (Port 4000)                │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐ │
-│  │ Controllers │  │  LiveView   │  │    Phoenix Channels     │ │
-│  │   (HTTP)    │  │ (Real-time) │  │   (WebSockets/Chat)     │ │
-│  └─────────────┘  └─────────────┘  └─────────────────────────┘ │
-│                                                                 │
-├─────────────────────────────────────────────────────────────────┤
-│                        Business Logic                           │
-│  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ ┌─────────┐│
-│  │   Accounts   │ │    Events    │ │ Certificates │ │ Reports ││
-│  │   Context    │ │   Context    │ │   Context    │ │ Context ││
-│  └──────────────┘ └──────────────┘ └──────────────┘ └─────────┘│
-│                                                                 │
-├─────────────────────────────────────────────────────────────────┤
-│                         Ecto Repo                               │
-│                    (PostgreSQL Adapter)                         │
-└─────────────────────────────────────────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                        PostgreSQL                                │
-│              (Users, Events, Registrations, etc.)               │
-└─────────────────────────────────────────────────────────────────┘
-```
 
 ### Estrutura de Diretórios
 
