@@ -18,6 +18,21 @@ Este sistema permite a gestão completa de eventos acadêmicos, incluindo:
 - **Dashboards e relatórios** com visualizações gráficas
 - **Controle de acesso** baseado em papéis (RBAC)
 
+### Telas do Sistema
+
+<div align="center">
+  <img src="img/01.png" width="48%" alt="Tela 01">
+  <img src="img/02.png" width="48%" alt="Tela 02">
+  <img src="img/03.png" width="48%" alt="Tela 03">
+  <img src="img/04.png" width="48%" alt="Tela 04">
+  <img src="img/05.png" width="48%" alt="Tela 05">
+  <img src="img/06.png" width="48%" alt="Tela 06">
+  <img src="img/07.png" width="48%" alt="Tela 07">
+  <img src="img/08.png" width="48%" alt="Tela 08">
+  <img src="img/09.png" width="48%" alt="Tela 09">
+  <img src="img/10.png" width="48%" alt="Tela 10">
+</div>
+
 ### Estrutura de Diretórios
 
 ```
