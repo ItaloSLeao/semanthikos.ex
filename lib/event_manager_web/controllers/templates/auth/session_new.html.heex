@@ -1,50 +1,120 @@
 <style>
+    @keyframes float {
+        0% { transform: translateY(0px) rotate(0deg) scale(1); }
+        33% { transform: translateY(-30px) rotate(10deg) scale(1.05); }
+        66% { transform: translateY(20px) rotate(-10deg) scale(0.95); }
+        100% { transform: translateY(0px) rotate(0deg) scale(1); }
+    }
+
+    @keyframes float-reverse {
+        0% { transform: translateY(0px) rotate(0deg) scale(1); }
+        33% { transform: translateY(30px) rotate(-10deg) scale(0.95); }
+        66% { transform: translateY(-20px) rotate(10deg) scale(1.05); }
+        100% { transform: translateY(0px) rotate(0deg) scale(1); }
+    }
+
     .login-container {
         --ink: #0d0f1a;
-        --ink-soft: #1e2130;
-        --paper: #faf9f6;
         --gold: #d4a547;
-        --slate: #6b7280;
-        --border: #eae9e4;
+        --glass-bg: rgba(255, 255, 255, 0.03);
+        --glass-border: rgba(255, 255, 255, 0.08);
         --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         
-        font-family: 'DM Sans', sans-serif;
-        background-color: var(--paper);
-        color: var(--ink);
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        background-color: var(--ink);
+        color: white;
         height: 100vh;
         width: 100vw;
         position: fixed;
         top: 0;
         left: 0;
         display: flex;
+        align-items: center;
+        justify-content: center;
         z-index: 9999;
+        overflow: hidden;
     }
 
-    .form-side {
-        flex: 0 0 45%;
+    /* Floating Orbs for the Background */
+    .orb-1 {
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(212, 165, 71, 0.25) 0%, rgba(212, 165, 71, 0) 70%);
+        top: -100px;
+        right: -100px;
+        border-radius: 50%;
+        filter: blur(60px);
+        animation: float 15s ease-in-out infinite;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .orb-2 {
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(30, 58, 138, 0.3) 0%, rgba(30, 58, 138, 0) 70%);
+        bottom: -200px;
+        left: -150px;
+        border-radius: 50%;
+        filter: blur(80px);
+        animation: float-reverse 18s ease-in-out infinite;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .orb-3 {
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(147, 51, 234, 0.15) 0%, rgba(147, 51, 234, 0) 70%);
+        top: 30%;
+        left: 30%;
+        border-radius: 50%;
+        filter: blur(50px);
+        animation: float 20s ease-in-out infinite 2s;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    /* Glass Card */
+    .glass-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid var(--glass-border);
+        border-radius: 28px;
+        padding: 4.5rem 4rem;
+        width: 90%;
+        max-width: 540px;
+        margin-bottom: 8vh; /* Eleva a caixa para acima do centro */
+        z-index: 10;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        padding: 4rem 12%;
-        background: var(--paper);
-        position: relative;
+        align-items: center;
     }
 
-    .logo {
-        position: absolute;
-        top: 3rem;
-        left: 12%;
+    /* Logo */
+    .logo-container {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 16px;
         text-decoration: none;
+        margin-bottom: 2.5rem;
+        transition: var(--transition);
+    }
+
+    .logo-container:hover {
+        transform: scale(1.02);
     }
 
     .logo-icon {
-        width: 32px;
-        height: 32px;
+        width: 48px;
+        height: 48px;
         background: var(--gold);
-        border-radius: 6px;
+        border-radius: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -52,152 +122,265 @@
 
     .logo-text {
         font-family: 'DM Serif Display', serif;
-        font-size: 1.4rem;
-        color: var(--ink);
+        font-size: 2.4rem;
+        font-weight: 800;
         letter-spacing: -0.01em;
     }
 
-    .auth-header { margin-bottom: 2.5rem; }
-    .auth-header h1 { font-family: 'DM Serif Display', serif; font-size: 2.8rem; line-height: 1.1; margin-bottom: 0.5rem; color: var(--ink); }
-    .auth-header p { color: var(--slate); font-size: 1rem; line-height: 1.6; }
+    .auth-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        width: 100%;
+    }
 
-    .input-group { position: relative; margin-bottom: 1.5rem; }
+    .auth-header h1 {
+        font-family: 'DM Serif Display', serif;
+        font-size: 2.8rem;
+        line-height: 1.2;
+        margin-bottom: 0.6rem;
+        color: white;
+    }
+
+    .auth-header p {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 1.15rem;
+        line-height: 1.6;
+        font-weight: 400;
+    }
+
+    /* Form Elements */
+    .form-wrapper {
+        width: 100%;
+    }
+
+    .input-group {
+        position: relative;
+        margin-bottom: 1.8rem;
+        width: 100%;
+    }
     
     .input-field {
         width: 100%;
-        padding: 1.25rem 1rem 0.75rem;
-        font-family: 'DM Sans', sans-serif;
-        font-size: 1rem;
-        color: var(--ink);
-        background: white;
-        border: 1px solid var(--border);
-        border-radius: 8px;
+        padding: 1.4rem 1.25rem 0.85rem;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 1.1rem;
+        color: white;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--glass-border);
+        border-radius: 14px;
         outline: none;
         transition: var(--transition);
+    }
+
+    /* Remove o fundo branco padrão do navegador ao usar o Autocompletar */
+    .input-field:-webkit-autofill,
+    .input-field:-webkit-autofill:hover, 
+    .input-field:-webkit-autofill:focus, 
+    .input-field:-webkit-autofill:active {
+        transition: background-color 5000s ease-in-out 0s !important;
+        -webkit-text-fill-color: white !important;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
     }
 
     .input-field:focus,
     .input-field:not(:placeholder-shown) {
         border-color: var(--gold);
+        background: rgba(255, 255, 255, 0.08);
         box-shadow: 0 0 0 4px rgba(212, 165, 71, 0.1);
     }
 
     .input-label {
         position: absolute;
-        left: 1rem;
+        left: 1.25rem;
         top: 50%;
         transform: translateY(-50%);
-        color: var(--slate);
-        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 1.1rem;
+        font-weight: 400;
         pointer-events: none;
         transition: var(--transition);
     }
 
     .input-field:focus ~ .input-label,
     .input-field:not(:placeholder-shown) ~ .input-label {
-        top: 0.6rem;
-        font-size: 0.75rem;
+        top: 0.7rem;
+        font-size: 0.8rem;
         font-weight: 600;
         color: var(--gold);
         text-transform: uppercase;
+        letter-spacing: 0.05em;
     }
 
     .btn-primary {
         width: 100%;
-        padding: 1.1rem;
-        background: var(--ink);
-        color: white;
+        padding: 1.35rem;
+        background: var(--gold);
+        color: var(--ink);
         border: none;
-        border-radius: 8px;
-        font-family: 'DM Sans', sans-serif;
-        font-size: 1rem;
-        font-weight: 600;
+        border-radius: 14px;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 1.15rem;
+        font-weight: 700;
         cursor: pointer;
         transition: var(--transition);
+        margin-top: 0.5rem;
+        box-shadow: 0 4px 16px rgba(212, 165, 71, 0.25);
     }
 
     .btn-primary:hover {
-        background: var(--ink-soft);
+        background: #deb35c;
         transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(212, 165, 71, 0.4);
     }
 
-    .brand-side {
-        flex: 0 0 55%;
-        background-color: var(--ink);
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 4rem;
+    .register-link {
+        margin-top: 2.5rem;
+        text-align: center;
+        font-size: 1.05rem;
+        color: rgba(255, 255, 255, 0.6);
+        width: 100%;
     }
 
-    .glass-card {
-        background: rgba(255, 255, 255, 0.03);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        border-radius: 24px;
-        padding: 4rem;
-        max-width: 600px;
-        z-index: 2;
+    .register-link a {
+        color: var(--gold);
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transition);
     }
 
-    .glass-card h2 { font-family: 'DM Serif Display', serif; font-size: 3.5rem; color: white; line-height: 1.1; margin-bottom: 1.5rem; }
-    .glass-card p { color: rgba(255, 255, 255, 0.6); font-size: 1.1rem; line-height: 1.7; }
-    
-    @media (max-width: 768px) {
-        .brand-side { display: none; }
-        .form-side { flex: 1; padding: 6rem 5% 4rem; }
-    }</style>
+    .register-link a:hover {
+        text-shadow: 0 0 8px rgba(212, 165, 71, 0.4);
+    }
+
+    .error-box {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        color: #fca5a5;
+        padding: 1.2rem;
+        border-radius: 14px;
+        margin-bottom: 1.8rem;
+        font-size: 1rem;
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Auth Footer */
+    .auth-footer {
+        position: absolute;
+        bottom: 2rem;
+        width: 100%;
+        text-align: center;
+        z-index: 10;
+    }
+    .auth-footer p {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.95rem;
+        margin: 4px 0;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+    .auth-footer a {
+        color: var(--gold);
+        text-decoration: none;
+        transition: var(--transition);
+    }
+    .auth-footer a:hover {
+        color: white;
+    }
+</style>
 
 <div class="login-container">
-    <div class="form-side">
-        <a href={~p"/"} class="logo">
+    <!-- Floating Background Orbs -->
+    <div class="orb-1"></div>
+    <div class="orb-2"></div>
+    <div class="orb-3"></div>
+
+    <div class="glass-card">
+        <!-- Logo -->
+        <a href={~p"/"} class="logo-container">
             <div class="logo-icon">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                    <path d="M9 2L11.2 7H16.5L12.3 10.3L13.8 15.5L9 12.5L4.2 15.5L5.7 10.3L1.5 7H6.8L9 2Z" fill="#0d0f1a"/>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0d0f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
                 </svg>
             </div>
-            <div class="logo-text">Seman<span style="color: var(--gold);">thikos</span></div>
+            <div class="logo-text">
+                <span style="color: white;">Seman</span><span style="color: var(--gold);">thikos</span>
+            </div>
         </a>
 
+        <!-- Header -->
         <div class="auth-header">
             <h1>Bem-vindo de volta.</h1>
             <p>Acesse o painel para gerenciar e interagir com seus eventos.</p>
         </div>
 
+        <!-- Error Messages -->
         <%= if @error_message do %>
-            <div style="background: #fef2f2; color: #b91c1c; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem;">
+            <div class="error-box">
                 <%= @error_message %>
             </div>
         <% end %>
 
-        <.form for={%{}} as={:user} action={~p"/users/log_in"}>
-            <div class="input-group">
-                <input type="email" name="user[email]" id="user_email" class="input-field" placeholder=" " required autocomplete="email">
-                <label for="user_email" class="input-label">E-mail Institucional</label>
-            </div>
+        <!-- Login Form -->
+        <div class="form-wrapper">
+            <.form for={%{}} as={:user} action={~p"/users/log_in"}>
+                <div class="input-group">
+                    <input type="email" name="user[email]" id="user_email" class="input-field" placeholder=" " required autocomplete="email">
+                    <label for="user_email" class="input-label">E-mail Institucional</label>
+                </div>
 
-            <div class="input-group">
-                <input type="password" name="user[password]" id="user_password" class="input-field" placeholder=" " required autocomplete="current-password">
-                <label for="user_password" class="input-label">Senha de Acesso</label>
-            </div>
+                <div class="input-group">
+                    <input type="password" name="user[password]" id="user_password" class="input-field" style="padding-right: 3rem; font-family: 'Helvetica Neue', Helvetica, Arial, system-ui, sans-serif;" placeholder=" " required autocomplete="current-password">
+                    <label for="user_password" class="input-label">Senha de Acesso</label>
+                    <button type="button" onclick="togglePassword()" style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: rgba(255, 255, 255, 0.5); padding: 0.25rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                        <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
 
-            <button type="submit" class="btn-primary">Acessar Plataforma</button>
-        </.form>
+                <button type="submit" class="btn-primary">Acessar Plataforma</button>
+            </.form>
+        </div>
         
-        <div style="margin-top: 2rem; text-align: center; font-size: 0.95rem; color: var(--slate);">
-            Novo por aqui? <a href={~p"/users/register"} style="color: var(--gold); font-weight: 600; text-decoration: none;">Crie sua conta</a>
+        <!-- Footer Link -->
+        <div class="register-link">
+            Novo por aqui? <a href={~p"/users/register"}>Crie sua conta</a>
         </div>
     </div>
 
-    <div class="brand-side">
-        <div class="glass-card">
-            <div style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; background: rgba(212, 165, 71, 0.1); border: 1px solid rgba(212, 165, 71, 0.2); border-radius: 100px; color: var(--gold); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 2rem;">
-                <span style="width:6px;height:6px;background:var(--gold);border-radius:50%;display:inline-block;"></span>
-                Gestão Acadêmica
-            </div>
-            <h2>Seus eventos acadêmicos<br>em um <em style="color: var(--gold); font-style: italic;">só lugar</em>.</h2>
-            <p>O ecossistema definitivo para planejamento, interação em tempo real e emissão de certificados das suas jornadas universitárias.</p>
+    <!-- Auth Footer -->
+    <div class="auth-footer" style="display:flex; flex-direction:column; align-items:center; text-align:center; margin-top:2rem;">
+        <div style="display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:16px; margin-bottom:12px;">
+            <span style="font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:0.85rem; color:rgba(255,255,255,0.6);">Sistema de Gerenciamento de Eventos Acadêmicos &copy; 2026</span>
+            <div style="width: 1px; height: 14px; background: rgba(255,255,255,0.2);"></div>
+            <span style="font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:0.85rem; color:rgba(255,255,255,0.5);">
+                Desenvolvido por <a href="https://github.com/ItaloSLeao" target="_blank" style="color:var(--gold); text-decoration:none; font-weight:600;">@ItaloSLeao</a>
+            </span>
         </div>
+
+        <a href="mailto:italoleao.dev@gmail.com" style="color:rgba(255,255,255,0.5); transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(255,255,255,0.5)'" aria-label="Enviar email">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+        </a>
     </div>
 </div>
+
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById('user_password');
+        const eyeIcon = document.getElementById('eye-icon');
+        const btn = eyeIcon.parentElement;
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            btn.style.color = 'white';
+            eyeIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+        } else {
+            passwordInput.type = 'password';
+            btn.style.color = 'rgba(255, 255, 255, 0.5)';
+            eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+        }
+    }
+</script>

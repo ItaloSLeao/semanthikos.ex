@@ -4,8 +4,8 @@
 
     <%!-- Logo --%>
     <a href={~p"/"} style="display:flex; align-items:center; gap:12px; text-decoration:none;">
-      <span style="width:36px; height:36px; background:var(--primary); border-radius:10px; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 12px var(--primary-glow);">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <span style="width:36px; height:36px; background:var(--primary); border-radius:10px; display:flex; align-items:center; justify-content:center;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0d0f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
         </svg>
       </span>
@@ -91,25 +91,29 @@
   <%= @inner_content %>
 </main>
 
-<%!-- ─── FOOTER ─────────────────────────────────────────────── --%>
-<footer style="background:var(--bg-surface); border-top: 1px solid var(--border-color); margin-top:6rem; padding:4rem 2rem;">
-  <div style="max-width:1280px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:2rem;">
-    <div>
-      <span style="font-family:'DM Serif Display',serif; color:var(--text-primary); font-size:1.4rem;">
-        Seman<span style="color:var(--primary);">thikos</span>
-      </span>
-      <p style="color:var(--text-muted); font-size:0.9rem; margin-top:8px;">
-        Sistema de Gerenciamento de Eventos Acadêmicos &copy; 2026
-      </p>
-      <p style="color:var(--text-muted); font-size:0.85rem; margin-top:4px;">
-        Desenvolvido por <a href="https://github.com/ItaloSLeao" target="_blank" style="color:var(--primary); text-decoration:none;">Ítalo Leão</a> 
-        (<a href="mailto:italoleao.dev@gmail.com" style="color:var(--text-muted); text-decoration:underline;">italoleao.dev@gmail.com</a>)
-      </p>
-    </div>
-    <div style="display:flex; gap:2rem;">
-      <a href={~p"/certificates/verify"} style="color:var(--text-muted); font-size:0.95rem; font-weight: 500; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">
-        Verificar autenticidade de Certificado
-      </a>
-    </div>
+<footer style="background:var(--bg-surface); border-top: 1px solid var(--border-color); margin-top:6rem; padding:4rem 2rem; display:flex; flex-direction:column; align-items:center; text-align:center;">
+  
+  <div style="margin-bottom:1rem;">
+    <span style="font-family:'DM Serif Display',serif; color:var(--text-primary); font-size:1.6rem;">
+      Seman<span style="color:var(--primary);">thikos</span>
+    </span>
   </div>
+
+  <div style="display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:16px; margin-bottom:12px;">
+    <span style="font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; color:var(--text-secondary); font-size:0.9rem;">
+      Sistema de Gerenciamento de Eventos Acadêmicos &copy; 2026
+    </span>
+    <div style="width: 1px; height: 16px; background: var(--border-color);"></div>
+    <span style="font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; color:var(--text-muted); font-size:0.9rem;">
+      Desenvolvido por <a href="https://github.com/ItaloSLeao" target="_blank" style="color:var(--primary); text-decoration:none; font-weight:600;">@ItaloSLeao</a>
+    </span>
+  </div>
+
+  <a href="mailto:italoleao.dev@gmail.com" style="color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'" aria-label="Enviar email">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+      <polyline points="22,6 12,13 2,6"></polyline>
+    </svg>
+  </a>
+
 </footer>
