@@ -1,4 +1,4 @@
-<div style="max-width:800px; margin:0 auto; padding:2rem;" class="anim-fadein">
+<div style="max-width:1400px; margin:0 auto; padding:2rem;" class="anim-fadein">
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
     <div>
       <h1 style="font-family:'DM Serif Display',serif; font-size:1.8rem; margin:0; color:var(--text-primary);">
@@ -13,66 +13,124 @@
     </a>
   </div>
 
-  <div class="surface" style="display:flex; flex-direction:column; height:60vh;">
+  <div style="display:flex; gap:1.5rem; height:75vh;">
     
-    <!-- Messages Area -->
-    <div id="chat-messages" phx-hook="ChatScroll" style="flex:1; padding:1.5rem; overflow-y:auto; display:flex; flex-direction:column; gap:1rem;" phx-update="stream">
-      <%= for {dom_id, msg} <- @streams.messages do %>
-        <% is_mine = msg.user_id == @current_user.id %>
-        <div id={dom_id} style={"display:flex; flex-direction:column; max-width:85%; " <> if(is_mine, do: "align-self:flex-end; align-items:flex-end;", else: "align-self:flex-start; align-items:flex-start;")}>
-          
-          <div style={"display:flex; align-items:baseline; gap:8px; margin-bottom:4px; " <> if(is_mine, do: "flex-direction:row-reverse;", else: "")}>
-            <span style="font-weight:600; font-size:0.85rem; color:var(--text-primary);"><%= if is_mine, do: "Você", else: msg.user_name %></span>
-            <span style="font-size:0.7rem; color:var(--text-muted);">
-              <local-time datetime={NaiveDateTime.to_iso8601(msg.sent_at)}><%= Calendar.strftime(msg.sent_at, "%H:%M") %></local-time>
-            </span>
-          </div>
+    <!-- Sidebar: Events List -->
+    <div class="surface" style="width:320px; display:flex; flex-direction:column; border-radius:16px; overflow:hidden; flex-shrink:0;">
+      <div style="padding:1.25rem; border-bottom:1px solid var(--border-color); background:var(--bg-surface-hover);">
+        <h3 style="font-size:1rem; font-weight:600; margin:0; color:var(--text-primary);">Salas de Chat</h3>
+      </div>
+      <div style="flex:1; overflow-y:auto; padding:0.75rem;">
+        <%= for e <- @all_events do %>
+          <a href={~p"/events/#{e.id}/chat"} 
+             style={"display:block; padding:12px; border-radius:12px; text-decoration:none; margin-bottom:8px; transition:background 0.2s; " <> if(e.id == @event.id, do: "background:var(--primary-glow); border:1px solid var(--primary);", else: "border:1px solid transparent;")}
+             onmouseover={if e.id != @event.id, do: "this.style.background='var(--bg-surface-hover)'"}
+             onmouseout={if e.id != @event.id, do: "this.style.background='transparent'"}>
+            <div style={"font-weight:600; font-size:0.95rem; margin-bottom:4px; line-height:1.3; " <> if(e.id == @event.id, do: "color:var(--primary);", else: "color:var(--text-primary);")}>
+              <%= e.title %>
+            </div>
+            <div style="font-size:0.75rem; color:var(--text-muted); display:flex; align-items:center; gap:4px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              <%= Calendar.strftime(e.date, "%d/%m/%Y") %>
+            </div>
+          </a>
+        <% end %>
+      </div>
+    </div>
 
-          <div style={"padding:12px 16px; border-radius:12px; font-size:0.95rem; line-height:1.5; " <> 
-                      if(msg.is_question, 
-                        do: "background:var(--primary-glow); border:1px solid var(--primary); color:var(--text-primary);", 
-                        else: if(is_mine, do: "background:var(--primary); color:#000; font-weight:500;", else: "background:var(--bg-surface-hover); border:1px solid var(--border-color); color:var(--text-primary);"))}>
-            
-            <%= if msg.is_question do %>
-              <div style="font-size:0.7rem; text-transform:uppercase; font-weight:700; color:var(--primary); margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
-                <span>Pergunta</span>
-                <%= if msg.is_answered do %>
-                  <span style="color:var(--success);">✓ Respondida</span>
+    <!-- Main Chat Area -->
+    <div class="surface" style="flex:1; display:flex; flex-direction:column; border-radius:16px; overflow:hidden;">
+      
+      <!-- Messages Area -->
+      <div id="chat-messages" phx-hook="ChatScroll" style="flex:1; padding:1.5rem; overflow-y:auto; display:flex; flex-direction:column; gap:1rem;" phx-update="stream">
+        <%= for {dom_id, item} <- @streams.messages do %>
+          <%= if item.type == :date_divider do %>
+            <% 
+               today = Date.utc_today()
+               date_str = if Date.compare(item.date, today) == :eq, do: "Hoje", else: Calendar.strftime(item.date, "%d/%m/%Y")
+            %>
+            <div id={dom_id} style="display:flex; justify-content:center; margin: 1.5rem 0 1rem;">
+              <span style="background:var(--bg-surface-hover); color:var(--text-secondary); padding:6px 16px; border-radius:99px; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; border:1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <%= date_str %>
+              </span>
+            </div>
+          <% else %>
+            <% 
+              msg = item
+              is_mine = msg.user_id == @current_user.id 
+              time_str = Calendar.strftime(msg.sent_at, "%H:%M")
+              initial = String.at(msg.user_name || "U", 0) |> String.upcase()
+            %>
+            <div id={dom_id} style={"display:flex; gap:12px; max-width:85%; margin-bottom:0.5rem; " <> if(is_mine, do: "align-self:flex-end; flex-direction:row-reverse;", else: "align-self:flex-start;")}>
+              
+              <!-- Avatar -->
+              <div style="width:36px; height:36px; border-radius:50%; background:var(--primary); color:#000; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1rem; flex-shrink:0; margin-top:2px; overflow:hidden;">
+                <%= if msg.avatar_path do %>
+                  <img src={msg.avatar_path} alt="Avatar" style="width:100%; height:100%; object-fit:cover;" />
+                <% else %>
+                  <%= initial %>
                 <% end %>
               </div>
-            <% end %>
+
+              <!-- Message Content -->
+              <div style={"display:flex; flex-direction:column; " <> if(is_mine, do: "align-items:flex-end;", else: "align-items:flex-start;")}>
+                
+                <div style={"display:flex; align-items:baseline; gap:8px; margin-bottom:4px; " <> if(is_mine, do: "flex-direction:row-reverse;", else: "")}>
+                  <span style="font-weight:600; font-size:0.85rem; color:var(--text-primary);"><%= if is_mine, do: "Você", else: msg.user_name %></span>
+                  <span style="font-size:0.75rem; color:var(--text-muted); font-weight:500;">
+                    <local-time datetime={NaiveDateTime.to_iso8601(msg.sent_at)}><%= time_str %></local-time>
+                  </span>
+                </div>
+
+                <div style={"padding:12px 16px; border-radius:14px; font-size:0.95rem; line-height:1.5; " <> 
+                            if(msg.is_question, 
+                              do: "background:var(--primary-glow); border:1px solid var(--primary); color:var(--text-primary);", 
+                              else: if(is_mine, do: "background:var(--primary); color:#000; font-weight:500; border-top-right-radius: 4px;", else: "background:var(--bg-surface-hover); border:1px solid var(--border-color); color:var(--text-primary); border-top-left-radius: 4px;"))}>
+                  
+                  <%= if msg.is_question do %>
+                    <div style="font-size:0.7rem; text-transform:uppercase; font-weight:700; color:var(--primary); margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
+                      <span>Pergunta</span>
+                      <%= if msg.is_answered do %>
+                        <span style="color:var(--success);">✓ Respondida</span>
+                      <% end %>
+                    </div>
+                  <% end %>
+                  
+                  <%= msg.message %>
+                </div>
+
+                <%= if msg.is_question and !msg.is_answered and @current_user.role in [:admin, :speaker] do %>
+                  <button phx-click="mark_answered" phx-value-message_id={msg.id}
+                          style="margin-top:6px; font-size:0.75rem; color:var(--success); background:none; border:none; cursor:pointer; font-weight:600;">
+                    ✓ Marcar como Respondida
+                  </button>
+                <% end %>
+
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+
+      <!-- Input Area -->
+      <div style="padding:1.5rem; border-top:1px solid var(--border-color); background:var(--bg-body); border-radius:0 0 16px 16px;">
+        <form id="chat-form" phx-submit="send_message" style="display:flex; flex-direction:column; gap:10px;">
+          <div style="display:flex; gap:10px;">
+            <input type="text" id="chat-input" name="message" value={@message_input} placeholder="Digite sua mensagem..." autocomplete="off" class="input-field" required />
             
-            <%= msg.message %>
+            <button type="submit" phx-disable-with="Enviando..." class="btn btn-primary" style="display:flex; align-items:center; gap:8px;">
+              Enviar
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
           </div>
 
-          <%= if msg.is_question and !msg.is_answered and @current_user.role in [:admin, :speaker] do %>
-            <button phx-click="mark_answered" phx-value-message_id={msg.id}
-                    style="margin-top:6px; font-size:0.75rem; color:var(--success); background:none; border:none; cursor:pointer; font-weight:600;">
-              ✓ Marcar como Respondida
-            </button>
-          <% end %>
+          <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--text-secondary); cursor:pointer;">
+            <input type="checkbox" id="chat-is-question" name="is_question" value="true" checked={@is_question} style="accent-color:var(--primary);" />
+            Marcar como Pergunta (Destaque)
+          </label>
+        </form>
+      </div>
 
-        </div>
-      <% end %>
     </div>
-
-    <!-- Input Area -->
-    <div style="padding:1.5rem; border-top:1px solid var(--border-color); background:var(--bg-body); border-radius:0 0 16px 16px;">
-      <form id="chat-form" phx-submit="send_message" style="display:flex; flex-direction:column; gap:10px;">
-        <div style="display:flex; gap:10px;">
-          <input type="text" id="chat-input" name="message" value={@message_input} placeholder="Digite sua mensagem..." autocomplete="off" class="input-field" required />
-          
-          <button type="submit" phx-disable-with="Enviando..." class="btn btn-primary">
-            Enviar
-          </button>
-        </div>
-
-        <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--text-secondary); cursor:pointer;">
-          <input type="checkbox" id="chat-is-question" name="is_question" value="true" checked={@is_question} style="accent-color:var(--primary);" />
-          Marcar como Pergunta (Destaque)
-        </label>
-      </form>
-    </div>
-
   </div>
 </div>

@@ -23,7 +23,8 @@ defmodule EventManager.Services do
   defp broadcast({:ok, msg}) do
     msg = Repo.preload(msg, :user)
     EventManagerWeb.Endpoint.broadcast("event_chat:#{msg.event_id}", "new_message", %{
-      id: msg.id, message: msg.message, user_name: msg.user && msg.user.name,
+      id: msg.id, user_id: msg.user_id, message: msg.message, user_name: msg.user && msg.user.name,
+      avatar_path: msg.user && msg.user.avatar_path,
       sent_at: msg.sent_at, is_question: msg.is_question, is_answered: msg.is_answered
     })
     {:ok, msg}

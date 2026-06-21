@@ -9,26 +9,47 @@ defmodule EventManagerWeb.EventChatLive do
 
     current_user = socket.assigns.current_user
 
-    messages = EventManager.Services.list_event_chat_messages(event_id, limit: 100)
-    |> Enum.map(fn msg ->
-      %{
-        id: msg.id,
+    messages_raw = EventManager.Services.list_event_chat_messages(event_id, limit: 100)
+
+    {messages, last_date} = Enum.reduce(messages_raw, {[], nil}, fn msg, {acc, last_date} ->
+      msg_date = NaiveDateTime.to_date(msg.sent_at)
+      
+      formatted_msg = %{
+        id: "msg-#{msg.id}",
+        type: :message,
         user_id: msg.user_id,
         message: msg.message,
         user_name: if(msg.user, do: msg.user.name, else: "Anon"),
+        avatar_path: if(msg.user, do: msg.user.avatar_path, else: nil),
         sent_at: msg.sent_at,
         is_question: msg.is_question,
         is_answered: msg.is_answered
       }
+
+      if last_date != msg_date do
+        divider = %{
+          id: "date-#{Date.to_string(msg_date)}",
+          type: :date_divider,
+          date: msg_date
+        }
+        {[formatted_msg, divider | acc], msg_date}
+      else
+        {[formatted_msg | acc], last_date}
+      end
     end)
+
+    messages = Enum.reverse(messages)
+    all_events = EventManager.Core.list_events()
 
     {:ok, 
       socket
       |> assign(
         event: EventManager.Core.get_event!(event_id),
+        all_events: all_events,
         message_input: "",
         is_question: false,
-        current_user: current_user
+        current_user: current_user,
+        last_message_date: last_date
       )
       |> stream(:messages, messages)
     }
@@ -82,17 +103,36 @@ defmodule EventManagerWeb.EventChatLive do
 
   @impl true
   def handle_info(%{event: "new_message", payload: msg}, socket) do
-    # Garante que a mensagem vinda do PubSub/Channel seja formatada corretamente para a UI
+    msg_date = NaiveDateTime.to_date(msg.sent_at)
+    last_date = socket.assigns.last_message_date
+
     formatted_msg = %{
-      id: msg.id,
+      id: "msg-#{msg.id}",
+      type: :message,
       user_id: msg.user_id,
       message: msg.message,
       user_name: msg.user_name,
+      avatar_path: msg.avatar_path,
       sent_at: msg.sent_at,
       is_question: msg.is_question,
       is_answered: msg.is_answered
     }
-    {:noreply, stream_insert(socket, :messages, formatted_msg)}
+
+    if last_date != msg_date do
+      divider = %{
+        id: "date-#{Date.to_string(msg_date)}",
+        type: :date_divider,
+        date: msg_date
+      }
+      {:noreply, 
+        socket
+        |> assign(last_message_date: msg_date)
+        |> stream_insert(:messages, divider)
+        |> stream_insert(:messages, formatted_msg)
+      }
+    else
+      {:noreply, stream_insert(socket, :messages, formatted_msg)}
+    end
   end
 
 end
