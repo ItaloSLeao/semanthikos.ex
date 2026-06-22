@@ -17,21 +17,7 @@ defmodule EventManagerWeb.AdminController do
   def create_event(conn, %{"event" => event_params}) do
     {event_params, upload} = pop_event_banner(conn, event_params)
 
-    # Garante um usuário no banco para evitar erro de Foreign Key no protótipo
-    speaker_id = case EventManager.Repo.all(EventManager.Schemas.User) do
-      [user | _] -> user.id
-      [] ->
-        {:ok, new_user} = EventManager.Core.register_speaker(%{
-          name: "Palestrante Padrão",
-          email: "palestrante@semanthikos.com",
-          password: "SenhaSegura123!"
-        })
-        new_user.id
-    end
-
     with {:ok, event_params} <- maybe_put_event_banner(upload, event_params) do
-      # Sobrescreve o speaker_id vindo do form com o ID válido
-      event_params = Map.put(event_params, "speaker_id", speaker_id)
 
       case EventManager.Core.create_event(event_params) do
         {:ok, _event} ->

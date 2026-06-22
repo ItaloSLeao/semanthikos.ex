@@ -9,6 +9,7 @@
       <div style="display:flex; flex-direction:column; gap:1.5rem;">
         <.input name={f[:title].name} id={f[:title].id} value={f[:title].value} errors={f[:title].errors} type="text" label="Título do Evento" required />
         <.input name={f[:description].name} id={f[:description].id} value={f[:description].value} errors={f[:description].errors} type="text" label="Descrição" required />
+        <.input name={f[:speaker_id].name} id={f[:speaker_id].id} value={f[:speaker_id].value} errors={f[:speaker_id].errors} type="select" options={Enum.map(@speakers, &{&1.name, &1.id})} label="Palestrante Responsável" required />
 
         <div>
           <label style="display:block; font-size:0.85rem; font-weight:700; color:var(--text-primary); margin-bottom:0.5rem;">Banner do Evento</label>

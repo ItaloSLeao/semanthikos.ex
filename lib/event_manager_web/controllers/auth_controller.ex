@@ -32,15 +32,6 @@ defmodule EventManagerWeb.AuthController do
     if conn.assigns[:current_user] do
       redirect(conn, to: ~p"/events")
     else
-      if EventManager.Repo.get_by(EventManager.Schemas.User, email: "usuario@semanthikos.com") == nil do
-        EventManager.Repo.insert!(%EventManager.Schemas.User{
-          name: "usuario",
-          email: "usuario@semanthikos.com",
-          hashed_password: Bcrypt.hash_pwd_salt("usuario"),
-          role: :admin
-        })
-      end
-
       conn
       |> put_layout(html: false)
       |> render("session_new.html", error_message: nil)

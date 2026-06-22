@@ -12,7 +12,7 @@ config :event_manager, EventManager.Repo,
 
 config :event_manager, EventManagerWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "uRkC9iV4L+lK1O+/M+a9/M/Q1xW1A9v6Wq4c6tZ3A8N1aD4=",
+  secret_key_base: "uRkC9iV4L+lK1O+/M+a9/M/Q1xW1A9v6Wq4c6tZ3A8N1aD4=1234567890123456",
   server: false
 
 config :swoosh, :api_client, false

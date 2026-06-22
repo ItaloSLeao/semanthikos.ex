@@ -47,7 +47,7 @@ defmodule EventManager.Schemas.Event do
       :online_url,
       :tags
     ])
-    |> validate_required([:title, :description, :date, :location, :max_seats])
+    |> validate_required([:title, :description, :date, :location, :max_seats, :speaker_id])
     |> validate_number(:max_seats, greater_than: 0, less_than: 10_000)
     |> validate_number(:duration_minutes, greater_than: 0, less_than: 1440)
     |> validate_length(:title, min: 5, max: 200)

@@ -130,6 +130,7 @@ defmodule EventManagerWeb.CoreComponents do
   attr :label, :string, default: nil
   attr :type, :string, default: "text"
   attr :value, :any, default: nil
+  attr :options, :list, default: nil
   attr :errors, :list, default: []
   attr :required, :boolean, default: false
   attr :rest, :global
@@ -145,15 +146,30 @@ defmodule EventManagerWeb.CoreComponents do
           <% end %>
         </label>
       <% end %>
-      <input
-        type={@type}
-        name={@name}
-        id={@name}
-        value={@value}
-        required={@required}
-        class="input-field"
-        {@rest}
-      />
+      <%= if @type == "select" do %>
+        <select
+          name={@name}
+          id={@name}
+          required={@required}
+          class="input-field"
+          {@rest}
+        >
+          <option value="" disabled selected={is_nil(@value)}>Selecione uma opção</option>
+          <%= for {label, value} <- assigns[:options] || [] do %>
+            <option value={value} selected={to_string(@value) == to_string(value)}><%= label %></option>
+          <% end %>
+        </select>
+      <% else %>
+        <input
+          type={@type}
+          name={@name}
+          id={@name}
+          value={@value}
+          required={@required}
+          class="input-field"
+          {@rest}
+        />
+      <% end %>
       <%= if @errors != [] do %>
         <div style="font-size:0.8rem; color:var(--danger);">
           <%= for error <- @errors do %>
