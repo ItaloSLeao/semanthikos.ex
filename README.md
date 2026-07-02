@@ -1,4 +1,4 @@
-# Semanthykos - Event Manager
+# Semantikos - Event Manager
 
 ![Elixir](https://img.shields.io/badge/Elixir-1.14+-purple.svg)
 ![Phoenix](https://img.shields.io/badge/Phoenix-1.7-blue.svg)
