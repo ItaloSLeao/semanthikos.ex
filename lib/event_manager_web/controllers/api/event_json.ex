@@ -1,4 +1,11 @@
 defmodule EventManagerWeb.Api.EventJSON do
+  @moduledoc """
+  Módulo `EventManagerWeb.Api.EventJSON`.
+
+  Faz parte da estrutura base do Event Manager, localizado em `event_manager_web/controllers/api/event_json.ex`.
+  Define lógicas, componentes ou rotas específicas dessa camada.
+  Para detalhes mais profundos, consulte a documentação da arquitetura central (`EventManager.Core` e `EventManagerWeb.Router`).
+  """
   alias EventManager.Schemas.Event
 
   def index(%{events: events}) do

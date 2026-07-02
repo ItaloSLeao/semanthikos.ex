@@ -1,6 +1,4 @@
 defmodule EventManagerWeb.ErrorHTML do
-  
-  
   @moduledoc """
   Error HTML rendering module.
   Handles 4xx and 5xx error responses.

@@ -2,8 +2,6 @@ defmodule EventManager.Fixtures do
   @moduledoc """
   Fixtures for testing.
   """
-  
-  
 
   def unique_user_email, do: "user#{System.unique_integer()}@example.com"
   def valid_user_password, do: "Password@123"

@@ -71,7 +71,9 @@ defmodule EventManager.Schemas.Event do
 
   defp validate_future_date(changeset) do
     case get_change(changeset, :date) do
-      nil -> changeset
+      nil ->
+        changeset
+
       date ->
         if DateTime.compare(date, DateTime.utc_now()) == :lt do
           add_error(changeset, :date, "deve ser uma data futura")
@@ -89,7 +91,9 @@ defmodule EventManager.Schemas.Event do
           "" -> add_error(changeset, :online_url, "é obrigatório para eventos online")
           _ -> changeset
         end
-      _ -> changeset
+
+      _ ->
+        changeset
     end
   end
 
@@ -98,7 +102,9 @@ defmodule EventManager.Schemas.Event do
 
   @doc "Counts current confirmed registrations"
   def registration_count(%__MODULE__{id: event_id}) do
-    from(r in EventManager.Schemas.Registration, where: r.event_id == ^event_id and r.status == :confirmed)
+    from(r in EventManager.Schemas.Registration,
+      where: r.event_id == ^event_id and r.status == :confirmed
+    )
     |> EventManager.Repo.aggregate(:count, :id)
   end
 
@@ -121,5 +127,6 @@ defmodule EventManager.Schemas.Event do
   def can_register?(%__MODULE__{status: :published} = event) do
     upcoming?(event) and has_available_seats?(event)
   end
+
   def can_register?(_), do: false
 end

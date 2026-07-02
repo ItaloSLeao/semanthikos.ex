@@ -1,6 +1,6 @@
 defmodule EventManagerWeb.CoreComponents do
   @moduledoc """
-  Core UI components — redesigned with the Semanthikos visual identity.
+  Core UI components — redesigned with the Semantikos visual identity.
   Paleta: ink (escuro), gold (âmbar), cyan (verde-água), paper (creme claro).
   """
   use Phoenix.Component
@@ -28,25 +28,25 @@ defmodule EventManagerWeb.CoreComponents do
     end
   end
 
-  defp flash_bg(:info),    do: "background: #eff6ff;"
+  defp flash_bg(:info), do: "background: #eff6ff;"
   defp flash_bg(:success), do: "background: #f0fdf4;"
   defp flash_bg(:warning), do: "background: #fffbeb;"
-  defp flash_bg(:error),   do: "background: #fef2f2;"
+  defp flash_bg(:error), do: "background: #fef2f2;"
 
-  defp flash_accent_color(:info),    do: "#3b82f6"
+  defp flash_accent_color(:info), do: "#3b82f6"
   defp flash_accent_color(:success), do: "#22c55e"
   defp flash_accent_color(:warning), do: "#d4a547"
-  defp flash_accent_color(:error),   do: "#ef4444"
+  defp flash_accent_color(:error), do: "#ef4444"
 
-  defp flash_text_color(:info),    do: "color: #1e40af;"
+  defp flash_text_color(:info), do: "color: #1e40af;"
   defp flash_text_color(:success), do: "color: #15803d;"
   defp flash_text_color(:warning), do: "color: #92400e;"
-  defp flash_text_color(:error),   do: "color: #b91c1c;"
+  defp flash_text_color(:error), do: "color: #b91c1c;"
 
-  defp flash_icon(:info),    do: "ℹ️"
+  defp flash_icon(:info), do: "ℹ️"
   defp flash_icon(:success), do: "✅"
   defp flash_icon(:warning), do: "⚠️"
-  defp flash_icon(:error),   do: "❌"
+  defp flash_icon(:error), do: "❌"
 
   # ── Button ─────────────────────────────────────────────────────────────────
 
@@ -70,10 +70,21 @@ defmodule EventManagerWeb.CoreComponents do
     """
   end
 
-  defp button_style(:primary),   do: "padding:10px 22px; background:var(--ink); color:white; border:none; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:0.875rem; font-weight:500; cursor:pointer; transition:background 0.2s;"
-  defp button_style(:secondary), do: "padding:10px 22px; background:var(--smoke); color:var(--ink); border:1px solid #e0ddd8; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:0.875rem; font-weight:500; cursor:pointer; transition:background 0.2s;"
-  defp button_style(:danger),    do: "padding:10px 22px; background:#dc2626; color:white; border:none; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:0.875rem; font-weight:500; cursor:pointer; transition:opacity 0.2s;"
-  defp button_style(:success),   do: "padding:10px 22px; background:var(--gold); color:var(--ink); border:none; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:0.875rem; font-weight:600; cursor:pointer; transition:opacity 0.2s;"
+  defp button_style(:primary),
+    do:
+      "padding:10px 22px; background:var(--ink); color:white; border:none; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:0.875rem; font-weight:500; cursor:pointer; transition:background 0.2s;"
+
+  defp button_style(:secondary),
+    do:
+      "padding:10px 22px; background:var(--smoke); color:var(--ink); border:1px solid #e0ddd8; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:0.875rem; font-weight:500; cursor:pointer; transition:background 0.2s;"
+
+  defp button_style(:danger),
+    do:
+      "padding:10px 22px; background:#dc2626; color:white; border:none; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:0.875rem; font-weight:500; cursor:pointer; transition:opacity 0.2s;"
+
+  defp button_style(:success),
+    do:
+      "padding:10px 22px; background:var(--gold); color:var(--ink); border:none; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:0.875rem; font-weight:600; cursor:pointer; transition:opacity 0.2s;"
 
   # ── Card ───────────────────────────────────────────────────────────────────
 
@@ -117,11 +128,25 @@ defmodule EventManagerWeb.CoreComponents do
     """
   end
 
-  defp badge_style(:default), do: "display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:0.72rem;font-weight:600;letter-spacing:0.04em;background:#f3f2ee;color:#6b7280;border:1px solid #e0ddd8;"
-  defp badge_style(:success),  do: "display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:0.72rem;font-weight:600;letter-spacing:0.04em;background:rgba(22,163,74,0.1);color:#15803d;border:1px solid rgba(22,163,74,0.2);"
-  defp badge_style(:warning),  do: "display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:0.72rem;font-weight:600;letter-spacing:0.04em;background:rgba(212,165,71,0.12);color:#92400e;border:1px solid rgba(212,165,71,0.3);"
-  defp badge_style(:danger),   do: "display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:0.72rem;font-weight:600;letter-spacing:0.04em;background:rgba(220,38,38,0.08);color:#b91c1c;border:1px solid rgba(220,38,38,0.15);"
-  defp badge_style(:info),     do: "display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:0.72rem;font-weight:600;letter-spacing:0.04em;background:rgba(59,130,246,0.08);color:#1d4ed8;border:1px solid rgba(59,130,246,0.15);"
+  defp badge_style(:default),
+    do:
+      "display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:0.72rem;font-weight:600;letter-spacing:0.04em;background:#f3f2ee;color:#6b7280;border:1px solid #e0ddd8;"
+
+  defp badge_style(:success),
+    do:
+      "display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:0.72rem;font-weight:600;letter-spacing:0.04em;background:rgba(22,163,74,0.1);color:#15803d;border:1px solid rgba(22,163,74,0.2);"
+
+  defp badge_style(:warning),
+    do:
+      "display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:0.72rem;font-weight:600;letter-spacing:0.04em;background:rgba(212,165,71,0.12);color:#92400e;border:1px solid rgba(212,165,71,0.3);"
+
+  defp badge_style(:danger),
+    do:
+      "display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:0.72rem;font-weight:600;letter-spacing:0.04em;background:rgba(220,38,38,0.08);color:#b91c1c;border:1px solid rgba(220,38,38,0.15);"
+
+  defp badge_style(:info),
+    do:
+      "display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:0.72rem;font-weight:600;letter-spacing:0.04em;background:rgba(59,130,246,0.08);color:#1d4ed8;border:1px solid rgba(59,130,246,0.15);"
 
   # ── Input ──────────────────────────────────────────────────────────────────
 
@@ -194,32 +219,32 @@ defmodule EventManagerWeb.CoreComponents do
 
   def event_status_badge(%{status: :draft} = assigns) do
     ~H"""
-      <.badge text="Rascunho" variant={:default} />
-      """
+    <.badge text="Rascunho" variant={:default} />
+    """
   end
 
   def event_status_badge(%{status: :published} = assigns) do
     ~H"""
-      <.badge text="Publicado" variant={:info} />
-      """
+    <.badge text="Publicado" variant={:info} />
+    """
   end
 
   def event_status_badge(%{status: :ongoing} = assigns) do
     ~H"""
-      <.badge text="Em andamento" variant={:success} />
-      """
+    <.badge text="Em andamento" variant={:success} />
+    """
   end
 
   def event_status_badge(%{status: :completed} = assigns) do
     ~H"""
-      <.badge text="Concluído" variant={:default} />
-      """
+    <.badge text="Concluído" variant={:default} />
+    """
   end
 
   def event_status_badge(%{status: :cancelled} = assigns) do
     ~H"""
-      <.badge text="Cancelado" variant={:danger} />
-      """
+    <.badge text="Cancelado" variant={:danger} />
+    """
   end
 
   # ── Role badge ─────────────────────────────────────────────────────────────
@@ -229,20 +254,20 @@ defmodule EventManagerWeb.CoreComponents do
 
   def role_badge(%{role: :admin} = assigns) do
     ~H"""
-      <.badge text="Admin" variant={:danger} />
-      """
+    <.badge text="Admin" variant={:danger} />
+    """
   end
 
   def role_badge(%{role: :speaker} = assigns) do
     ~H"""
-      <.badge text="Palestrante" variant={:warning} />
-      """
+    <.badge text="Palestrante" variant={:warning} />
+    """
   end
 
   def role_badge(%{role: :student} = assigns) do
     ~H"""
-      <.badge text="Estudante" variant={:default} />
-      """
+    <.badge text="Estudante" variant={:default} />
+    """
   end
 
   # ── Formatted datetime ─────────────────────────────────────────────────────
@@ -259,8 +284,11 @@ defmodule EventManagerWeb.CoreComponents do
     """
   end
 
-  defp format_datetime(datetime, :short),     do: Calendar.strftime(datetime, "%d/%m/%Y %H:%M")
-  defp format_datetime(datetime, :long),      do: Calendar.strftime(datetime, "%A, %d de %B de %Y às %H:%M")
+  defp format_datetime(datetime, :short), do: Calendar.strftime(datetime, "%d/%m/%Y %H:%M")
+
+  defp format_datetime(datetime, :long),
+    do: Calendar.strftime(datetime, "%A, %d de %B de %Y às %H:%M")
+
   defp format_datetime(datetime, :date_only), do: Calendar.strftime(datetime, "%d/%m/%Y")
-  defp format_iso(datetime),                  do: Calendar.strftime(datetime, "%Y-%m-%dT%H:%M:%S")
+  defp format_iso(datetime), do: Calendar.strftime(datetime, "%Y-%m-%dT%H:%M:%S")
 end

@@ -18,10 +18,11 @@ defmodule EventManagerWeb.ConnCase do
 
   setup tags do
     EventManager.DataCase.setup_sandbox(tags)
-    conn = 
+
+    conn =
       Phoenix.ConnTest.build_conn()
       |> Plug.Conn.put_req_header("x-forwarded-proto", "https")
-      
+
     {:ok, conn: conn}
   end
 

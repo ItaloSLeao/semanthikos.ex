@@ -1,7 +1,9 @@
 defmodule EventManager.Schemas.ChatMessage do
   @moduledoc """
-  ChatMessage schema for real-time event chat.
-  Tracks messages and Q&A status.
+  Esquema Ecto para Mensagens do Chat.
+
+  Mapeia a tabela `chat_messages` no banco de dados. Representa instâncias individuais de mensagens enviadas no chat ao vivo.
+  Define as relações (quem enviou, de qual evento pertence) e lógicas de validação (cast) de dados antes de serem inseridos no BD.
   """
   use Ecto.Schema
   import Ecto.Changeset
@@ -24,7 +26,16 @@ defmodule EventManager.Schemas.ChatMessage do
   @doc false
   def changeset(chat_message, attrs) do
     chat_message
-    |> cast(attrs, [:message, :event_id, :user_id, :is_question, :is_answered, :file_url, :file_name, :file_type])
+    |> cast(attrs, [
+      :message,
+      :event_id,
+      :user_id,
+      :is_question,
+      :is_answered,
+      :file_url,
+      :file_name,
+      :file_type
+    ])
     |> validate_required([:event_id, :user_id])
     |> validate_message_or_file()
     |> validate_length(:message, max: 1000)

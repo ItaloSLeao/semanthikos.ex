@@ -1,5 +1,12 @@
 defmodule EventManager.Services do
-  @moduledoc "Services context consolidating Notifications, Certificates, and Reports logic."
+  @moduledoc """
+  Gerente de Apoio (Serviços Secundários).
+
+  Responsável por gerenciar funcionalidades secundárias ou de suporte ao sistema, como:
+  - Chats ao vivo (armazenamento de histórico, emissão de mensagens).
+  - Geração de certificados.
+  - Extração de relatórios analíticos do sistema.
+  """
   import Ecto.Query
   alias EventManager.Repo
   alias EventManager.Schemas.{ChatMessage, Certificate, Event, Registration, User}
@@ -12,30 +19,50 @@ defmodule EventManager.Services do
 
   def list_event_chat_messages(event_id, opts \\ []) do
     limit = Keyword.get(opts, :limit, 100)
-    from(m in ChatMessage, where: m.event_id == ^event_id, preload: [:user],
-         order_by: [asc: m.sent_at], limit: ^limit) |> Repo.all()
+
+    from(m in ChatMessage,
+      where: m.event_id == ^event_id,
+      preload: [:user],
+      order_by: [asc: m.sent_at],
+      limit: ^limit
+    )
+    |> Repo.all()
   end
 
   def mark_question_answered(message_id) do
-    Repo.get!(ChatMessage, message_id) |> ChatMessage.answer_changeset() |> Repo.update() |> broadcast()
+    Repo.get!(ChatMessage, message_id)
+    |> ChatMessage.answer_changeset()
+    |> Repo.update()
+    |> broadcast()
   end
 
   defp broadcast({:ok, msg}) do
     msg = Repo.preload(msg, :user)
+
     EventManagerWeb.Endpoint.broadcast("event_chat:#{msg.event_id}", "new_message", %{
-      id: msg.id, user_id: msg.user_id, message: msg.message, user_name: msg.user && msg.user.name,
+      id: msg.id,
+      user_id: msg.user_id,
+      message: msg.message,
+      user_name: msg.user && msg.user.name,
       avatar_path: msg.user && msg.user.avatar_path,
-      sent_at: msg.sent_at, is_question: msg.is_question, is_answered: msg.is_answered
+      sent_at: msg.sent_at,
+      is_question: msg.is_question,
+      is_answered: msg.is_answered
     })
+
     {:ok, msg}
   end
+
   defp broadcast(error), do: error
 
   def broadcast_event_notification(event_id, type, data),
     do: EventManagerWeb.Endpoint.broadcast("event_notifications:#{event_id}", type, data)
 
   def broadcast_capacity_warning(event_id, remaining_seats),
-    do: broadcast_event_notification(event_id, "capacity_warning", %{remaining_seats: remaining_seats})
+    do:
+      broadcast_event_notification(event_id, "capacity_warning", %{
+        remaining_seats: remaining_seats
+      })
 
   def broadcast_event_reminder(event_id, minutes_until),
     do: broadcast_event_notification(event_id, "event_reminder", %{minutes_until: minutes_until})
@@ -43,22 +70,29 @@ defmodule EventManager.Services do
   ## --- CERTIFICATES ---
 
   def generate_certificate(user_id, event_id, type \\ :participation) do
-    %Certificate{} |> Certificate.changeset(%{user_id: user_id, event_id: event_id, certificate_type: type})
-    |> Repo.insert() |> then(&generate_pdf_data/1)
+    %Certificate{}
+    |> Certificate.changeset(%{user_id: user_id, event_id: event_id, certificate_type: type})
+    |> Repo.insert()
+    |> then(&generate_pdf_data/1)
   end
 
   def generate_event_certificates(event_id) do
     EventManager.Core.list_event_registrations(event_id)
     |> Enum.filter(& &1.attended)
     |> Enum.map(&generate_certificate(&1.user_id, event_id, :participation))
-    |> Enum.filter(&match?({:ok, _}, &1)) |> length()
+    |> Enum.filter(&match?({:ok, _}, &1))
+    |> length()
   end
 
   defp generate_pdf_data({:ok, cert}) do
     user = Repo.get!(User, cert.user_id)
     event = Repo.get!(Event, cert.event_id) |> Repo.preload(:speaker)
-    cert |> Ecto.Changeset.change(pdf_data: build_certificate_pdf(user, event, cert)) |> Repo.update()
+
+    cert
+    |> Ecto.Changeset.change(pdf_data: build_certificate_pdf(user, event, cert))
+    |> Repo.update()
   end
+
   defp generate_pdf_data(error), do: error
 
   def build_certificate_pdf(user, event, cert) do
@@ -439,7 +473,7 @@ defmodule EventManager.Services do
                         fill="#0C1F3C" font-weight="700">S</text>
                 </svg>
 
-                <span class="issuer-label">Semanthikos · Plataforma Acadêmica</span>
+                <span class="issuer-label">Semantikos · Plataforma Acadêmica</span>
                 <span class="cert-main-title">Certificado</span>
                 <!-- cert_type retorna: "Participação", "Apresentação" ou "Organização" -->
                 <span class="cert-type">de #{cert_type(cert.certificate_type)}</span>
@@ -491,7 +525,7 @@ defmodule EventManager.Services do
 
                 <div class="sig-box">
                   <div class="sig-line"></div>
-                  <span class="sig-name">Semanthikos</span>
+                  <span class="sig-name">Semantikos</span>
                   <span class="sig-role">Coordenação Acadêmica</span>
                 </div>
               </div>
@@ -516,7 +550,7 @@ defmodule EventManager.Services do
                 <!-- Texto no anel -->
                 <text font-family="Cinzel, serif" font-size="9" fill="#0C1F3C" letter-spacing="2">
                   <textPath href="#cert-ring-path" startOffset="4%">
-                    · SEMANTHIKOS · COORDENAÇÃO ACADÊMICA · CERTIFICADO OFICIAL ·
+                    · SEMANTIKOS · COORDENAÇÃO ACADÊMICA · CERTIFICADO OFICIAL ·
                   </textPath>
                 </text>
               </svg>
@@ -536,21 +570,43 @@ defmodule EventManager.Services do
   defp fmt_date(dt), do: Calendar.strftime(dt, "%d/%m/%Y às %H:%M")
 
   def get_certificate!(id), do: Repo.get!(Certificate, id)
-  def get_certificate_by_number(number), do: Repo.get_by(Certificate, certificate_number: number) |> Repo.preload([:user, :event])
+
+  def get_certificate_by_number(number),
+    do: Repo.get_by(Certificate, certificate_number: number) |> Repo.preload([:user, :event])
 
   def list_user_certificates(user_id) do
-    from(c in Certificate, where: c.user_id == ^user_id, preload: [:event], order_by: [desc: c.generated_at]) |> Repo.all()
+    from(c in Certificate,
+      where: c.user_id == ^user_id,
+      preload: [:event],
+      order_by: [desc: c.generated_at]
+    )
+    |> Repo.all()
   end
 
   def list_event_certificates(event_id) do
-    from(c in Certificate, where: c.event_id == ^event_id, preload: [:user], order_by: [asc: c.generated_at]) |> Repo.all()
+    from(c in Certificate,
+      where: c.event_id == ^event_id,
+      preload: [:user],
+      order_by: [asc: c.generated_at]
+    )
+    |> Repo.all()
   end
 
   def verify_certificate(number) do
     case get_certificate_by_number(number) do
-      nil -> {:error, :not_found}
-      cert -> {:ok, %{certificate_number: cert.certificate_number, user_name: cert.user.name, event_title: cert.event.title,
-                      event_date: cert.event.date, generated_at: cert.generated_at, verified: cert.verified}}
+      nil ->
+        {:error, :not_found}
+
+      cert ->
+        {:ok,
+         %{
+           certificate_number: cert.certificate_number,
+           user_name: cert.user.name,
+           event_title: cert.event.title,
+           event_date: cert.event.date,
+           generated_at: cert.generated_at,
+           verified: cert.verified
+         }}
     end
   end
 
@@ -561,14 +617,18 @@ defmodule EventManager.Services do
       total_events: Repo.aggregate(Event, :count, :id),
       total_users: Repo.aggregate(User, :count, :id),
       total_registrations: Repo.aggregate(Registration, :count, :id),
-      upcoming_events: from(e in Event, where: e.date > ^DateTime.utc_now() and e.status == :published) |> Repo.aggregate(:count, :id),
-      completed_events: from(e in Event, where: e.status == :completed) |> Repo.aggregate(:count, :id)
+      upcoming_events:
+        from(e in Event, where: e.date > ^DateTime.utc_now() and e.status == :published)
+        |> Repo.aggregate(:count, :id),
+      completed_events:
+        from(e in Event, where: e.status == :completed) |> Repo.aggregate(:count, :id)
     }
   end
 
   def get_occupancy_report(opts \\ []) do
     from(e in Event,
-      left_join: r in Registration, on: r.event_id == e.id,
+      left_join: r in Registration,
+      on: r.event_id == e.id,
       where: e.status in [:published, :completed],
       group_by: e.id,
       select: %{
@@ -577,7 +637,12 @@ defmodule EventManager.Services do
         date: e.date,
         max_seats: e.max_seats,
         registrations: count(r.id),
-        occupancy_rate: fragment("ROUND(CAST(COUNT(?) AS NUMERIC) / CAST(NULLIF(?, 0) AS NUMERIC) * 100, 2)", r.id, e.max_seats),
+        occupancy_rate:
+          fragment(
+            "ROUND(CAST(COUNT(?) AS NUMERIC) / CAST(NULLIF(?, 0) AS NUMERIC) * 100, 2)",
+            r.id,
+            e.max_seats
+          ),
         remaining_seats: e.max_seats - count(r.id)
       },
       order_by: [desc: e.date]
@@ -587,55 +652,113 @@ defmodule EventManager.Services do
   end
 
   def get_participation_by_course(_opts \\ []) do
-    from(u in User, left_join: r in Registration, on: r.user_id == u.id, where: not is_nil(u.course),
+    from(u in User,
+      left_join: r in Registration,
+      on: r.user_id == u.id,
+      where: not is_nil(u.course),
       group_by: u.course,
-      select: %{course: u.course, total_registrations: count(r.id),
-                total_attended: fragment("COUNT(CASE WHEN ? THEN 1 END)", r.attended)},
-      order_by: [desc: count(r.id)]) |> Repo.all()
+      select: %{
+        course: u.course,
+        total_registrations: count(r.id),
+        total_attended: fragment("COUNT(CASE WHEN ? THEN 1 END)", r.attended)
+      },
+      order_by: [desc: count(r.id)]
+    )
+    |> Repo.all()
   end
 
   def get_participation_by_department do
-    from(u in User, left_join: r in Registration, on: r.user_id == u.id, where: not is_nil(u.department),
+    from(u in User,
+      left_join: r in Registration,
+      on: r.user_id == u.id,
+      where: not is_nil(u.department),
       group_by: u.department,
-      select: %{department: u.department, total_registrations: count(r.id),
-                total_attended: fragment("COUNT(CASE WHEN ? THEN 1 END)", r.attended)},
-      order_by: [desc: count(r.id)]) |> Repo.all()
+      select: %{
+        department: u.department,
+        total_registrations: count(r.id),
+        total_attended: fragment("COUNT(CASE WHEN ? THEN 1 END)", r.attended)
+      },
+      order_by: [desc: count(r.id)]
+    )
+    |> Repo.all()
   end
 
   def get_monthly_stats(year \\ DateTime.utc_now().year) do
-    from(e in Event, where: fragment("EXTRACT(YEAR FROM ?) = ?", e.date, ^year),
+    from(e in Event,
+      where: fragment("EXTRACT(YEAR FROM ?) = ?", e.date, ^year),
       group_by: fragment("EXTRACT(MONTH FROM date)"),
-      select: %{month: fragment("EXTRACT(MONTH FROM date)"), total_events: count(e.id), total_seats: sum(e.max_seats)},
-      order_by: [asc: fragment("EXTRACT(MONTH FROM date)")]) |> Repo.all()
+      select: %{
+        month: fragment("EXTRACT(MONTH FROM date)"),
+        total_events: count(e.id),
+        total_seats: sum(e.max_seats)
+      },
+      order_by: [asc: fragment("EXTRACT(MONTH FROM date)")]
+    )
+    |> Repo.all()
   end
 
   def export_registrations_csv(event_id) do
-    regs = from(r in Registration, where: r.event_id == ^event_id, preload: [:user], order_by: [asc: r.registered_at]) |> Repo.all()
+    regs =
+      from(r in Registration,
+        where: r.event_id == ^event_id,
+        preload: [:user],
+        order_by: [asc: r.registered_at]
+      )
+      |> Repo.all()
+
     headers = ["Nome", "Email", "Curso", "Departamento", "Data Registro", "Presença"]
-    rows = Enum.map(regs, fn r ->
-      [r.user.name, r.user.email, r.user.course || "N/A", r.user.department || "N/A",
-       Calendar.strftime(r.registered_at, "%d/%m/%Y %H:%M"), if(r.attended, do: "Sim", else: "Não")]
-    end)
+
+    rows =
+      Enum.map(regs, fn r ->
+        [
+          r.user.name,
+          r.user.email,
+          r.user.course || "N/A",
+          r.user.department || "N/A",
+          Calendar.strftime(r.registered_at, "%d/%m/%Y %H:%M"),
+          if(r.attended, do: "Sim", else: "Não")
+        ]
+      end)
+
     [headers | rows] |> CSV.encode() |> Enum.to_list() |> IO.iodata_to_binary()
   end
 
   def export_events_csv(opts \\ []) do
     events = EventManager.Core.list_events(opts)
     headers = ["Título", "Data", "Local", "Vagas", "Inscritos", "Ocupação (%)", "Status"]
-    rows = Enum.map(events, fn e ->
-      regs = length(e.registrations || [])
-      [e.title, Calendar.strftime(e.date, "%d/%m/%Y %H:%M"), e.location, e.max_seats, regs,
-       Float.round(regs / max(e.max_seats, 1) * 100, 2), Atom.to_string(e.status)]
-    end)
+
+    rows =
+      Enum.map(events, fn e ->
+        regs = length(e.registrations || [])
+
+        [
+          e.title,
+          Calendar.strftime(e.date, "%d/%m/%Y %H:%M"),
+          e.location,
+          e.max_seats,
+          regs,
+          Float.round(regs / max(e.max_seats, 1) * 100, 2),
+          Atom.to_string(e.status)
+        ]
+      end)
+
     [headers | rows] |> CSV.encode() |> Enum.to_list() |> IO.iodata_to_binary()
   end
 
   def get_speaker_stats(speaker_id) do
-    events = from(e in Event, where: e.speaker_id == ^speaker_id, preload: [:registrations]) |> Repo.all()
+    events =
+      from(e in Event, where: e.speaker_id == ^speaker_id, preload: [:registrations])
+      |> Repo.all()
+
     total_events = length(events)
     total_regs = events |> Enum.map(&length(&1.registrations)) |> Enum.sum()
-    %{speaker_id: speaker_id, total_events: total_events, total_registrations: total_regs,
-      average_registrations: if(total_events > 0, do: total_regs / total_events, else: 0)}
+
+    %{
+      speaker_id: speaker_id,
+      total_events: total_events,
+      total_registrations: total_regs,
+      average_registrations: if(total_events > 0, do: total_regs / total_events, else: 0)
+    }
   end
 
   defp maybe_limit(query, nil), do: query

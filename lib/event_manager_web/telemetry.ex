@@ -1,6 +1,4 @@
 defmodule EventManagerWeb.Telemetry do
-  
-  
   @moduledoc """
   Telemetry module for collecting metrics and monitoring application health.
   """
@@ -89,7 +87,9 @@ defmodule EventManagerWeb.Telemetry do
 
   def event_stats do
     events = EventManager.Core.list_events()
-    registrations = length(events) > 0 && events |> Enum.map(&(&1.registrations |> length)) |> Enum.sum() || 0
+
+    registrations =
+      (length(events) > 0 && events |> Enum.map(&(&1.registrations |> length)) |> Enum.sum()) || 0
 
     :telemetry.execute(
       [:event_manager, :stats],

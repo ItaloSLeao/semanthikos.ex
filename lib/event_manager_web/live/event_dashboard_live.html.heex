@@ -6,33 +6,33 @@
       <h1 style="font-family:'DM Serif Display',serif; font-size:2rem; margin:0;">Dashboard: <%= @event.title %></h1>
     </div>
     <div style="margin-bottom:1.5rem;">
-      <a href={~p"/events/#{@event.id}"} style="font-size:0.85rem; color:var(--text-secondary); text-decoration:none; font-weight:600; background:var(--bg-surface-hover); padding:6px 16px; border-radius:9999px; display:inline-flex; align-items:center; gap:6px; border:1px solid var(--border-color); transition:all 0.2s;">
-        &larr; Voltar
+      <a href={~p"/events/#{@event.id}"} style="font-size:0.85rem; color:var(--text-secondary); text-decoration:none; font-weight:600; background:var(--bg-surface-hover); padding:6px 16px; border-radius:9999px; display:inline-flex; align-items:center; gap:6px; border:1px solid var(--border-color); transition:all 0.2s;" onmouseover="this.style.background='var(--border-color)'" onmouseout="this.style.background='var(--bg-surface-hover)'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg> Voltar
       </a>
     </div>
   </div>
 
   <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:1.5rem; margin-bottom:2rem;">
-    <div style="background:white; border:1px solid #eae9e4; border-radius:12px; padding:2rem; text-align:center;">
-      <p style="font-size:0.85rem; text-transform:uppercase; color:var(--slate); margin:0 0 0.5rem; font-weight:600;">Confirmados</p>
+    <div class="surface" style="border-radius:12px; padding:2rem; text-align:center; border:1px solid var(--border-color);">
+      <p style="font-size:0.85rem; text-transform:uppercase; color:var(--text-muted); margin:0 0 0.5rem; font-weight:600;">Confirmados</p>
       <div style="font-family:'DM Serif Display',serif; font-size:3.5rem; color:var(--cyan); line-height:1;"><%= @stats.total_registrations %></div>
-      <p style="font-size:0.85rem; color:var(--slate); margin:1rem 0 0;">/ <%= @event.max_seats %> vagas</p>
+      <p style="font-size:0.85rem; color:var(--text-muted); margin:1rem 0 0;">/ <%= @event.max_seats %> vagas</p>
     </div>
     
-    <div style="background:white; border:1px solid #eae9e4; border-radius:12px; padding:2rem; text-align:center;">
-      <p style="font-size:0.85rem; text-transform:uppercase; color:var(--slate); margin:0 0 0.5rem; font-weight:600;">Taxa de Ocupação</p>
+    <div class="surface" style="border-radius:12px; padding:2rem; text-align:center; border:1px solid var(--border-color);">
+      <p style="font-size:0.85rem; text-transform:uppercase; color:var(--text-muted); margin:0 0 0.5rem; font-weight:600;">Taxa de Ocupação</p>
       <div style="font-family:'DM Serif Display',serif; font-size:3.5rem; color:var(--gold); line-height:1;"><%= @stats.occupancy_rate %>%</div>
-      <p style="font-size:0.85rem; color:var(--slate); margin:1rem 0 0;">(Vagas Restantes: <%= @stats.remaining_seats %>)</p>
+      <p style="font-size:0.85rem; color:var(--text-muted); margin:1rem 0 0;">(Vagas Restantes: <%= @stats.remaining_seats %>)</p>
     </div>
 
-    <div style="background:white; border:1px solid #eae9e4; border-radius:12px; padding:2rem; text-align:center;">
-      <p style="font-size:0.85rem; text-transform:uppercase; color:var(--slate); margin:0 0 0.5rem; font-weight:600;">Fila de Espera</p>
-      <div style="font-family:'DM Serif Display',serif; font-size:3.5rem; color:var(--ink); line-height:1;"><%= @stats.waitlisted %></div>
+    <div class="surface" style="border-radius:12px; padding:2rem; text-align:center; border:1px solid var(--border-color);">
+      <p style="font-size:0.85rem; text-transform:uppercase; color:var(--text-muted); margin:0 0 0.5rem; font-weight:600;">Fila de Espera</p>
+      <div style="font-family:'DM Serif Display',serif; font-size:3.5rem; color:var(--text-primary); line-height:1;"><%= @stats.waitlisted %></div>
     </div>
     
-    <div style="background:white; border:1px solid #eae9e4; border-radius:12px; padding:2rem; text-align:center;">
-      <p style="font-size:0.85rem; text-transform:uppercase; color:var(--slate); margin:0 0 0.5rem; font-weight:600;">Presenças Marcadas</p>
-      <div style="font-family:'DM Serif Display',serif; font-size:3.5rem; color:var(--ink); line-height:1;"><%= @stats.total_attended %></div>
+    <div class="surface" style="border-radius:12px; padding:2rem; text-align:center; border:1px solid var(--border-color);">
+      <p style="font-size:0.85rem; text-transform:uppercase; color:var(--text-muted); margin:0 0 0.5rem; font-weight:600;">Presenças Marcadas</p>
+      <div style="font-family:'DM Serif Display',serif; font-size:3.5rem; color:var(--text-primary); line-height:1;"><%= @stats.total_attended %></div>
     </div>
   </div>
 

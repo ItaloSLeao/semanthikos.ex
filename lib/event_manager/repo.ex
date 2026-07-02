@@ -1,7 +1,9 @@
 defmodule EventManager.Repo do
   @moduledoc """
-  Ecto repository module for database operations.
-  Uses PostgreSQL as the data store.
+  Mecanismo de banco de dados do sistema, utilizando Ecto.
+
+  Responsável por realizar a comunicação com o PostgreSQL e gerenciar transações.
+  Aqui são implementadas operações atômicas críticas, como `reserve_seat/2`, que garante a atomicidade em reservas de vagas sem race conditions.
   """
   use Ecto.Repo,
     otp_app: :event_manager,
@@ -34,11 +36,12 @@ defmodule EventManager.Repo do
     end)
     |> Ecto.Multi.insert(:registration, fn %{check_seats: status} ->
       attrs = %{
-        event_id: event_id, 
-        user_id: user_id, 
+        event_id: event_id,
+        user_id: user_id,
         status: status,
         registered_at: DateTime.utc_now() |> DateTime.truncate(:second)
       }
+
       EventManager.Schemas.Registration.changeset(%EventManager.Schemas.Registration{}, attrs)
     end)
     |> transaction()

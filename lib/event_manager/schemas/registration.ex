@@ -22,7 +22,15 @@ defmodule EventManager.Schemas.Registration do
   @doc false
   def changeset(registration, attrs) do
     registration
-    |> cast(attrs, [:user_id, :event_id, :attended, :attendance_marked_at, :notes, :registered_at, :status])
+    |> cast(attrs, [
+      :user_id,
+      :event_id,
+      :attended,
+      :attendance_marked_at,
+      :notes,
+      :registered_at,
+      :status
+    ])
     |> validate_required([:user_id, :event_id])
     |> default_registered_at()
     |> unique_constraint([:user_id, :event_id], name: :registrations_user_event_index)

@@ -8,7 +8,11 @@ defmodule EventManager.Schemas.Certificate do
 
   schema "certificates" do
     field :certificate_number, :string
-    field :certificate_type, Ecto.Enum, values: [:participation, :speaker, :organizer], default: :participation
+
+    field :certificate_type, Ecto.Enum,
+      values: [:participation, :speaker, :organizer],
+      default: :participation
+
     field :generated_at, :utc_datetime
     field :pdf_data, :binary
     field :verified, :boolean, default: false

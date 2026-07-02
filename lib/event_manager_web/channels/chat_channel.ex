@@ -1,7 +1,10 @@
 defmodule EventManagerWeb.ChatChannel do
   @moduledoc """
-  Phoenix Channel for real-time event chat.
-  Handles Q&A during events with message persistence.
+  Canal de Chat em Tempo Real (Phoenix Channels).
+
+  Este módulo define o funcionamento do WebSocket para as salas de chat padrão (não-LiveView).
+  Ele permite comunicação bidirecional de baixa latência e utiliza o PubSub do Phoenix para distribuir a mensagem instantaneamente a todos os clientes conectados no mesmo tópico (ex: `chat:event_id`).
+  Funciona escutando eventos como `"new_msg"` e transmitindo via `broadcast!`.
   """
   use EventManagerWeb, :channel
 

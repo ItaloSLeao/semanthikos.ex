@@ -1,9 +1,10 @@
 defmodule EventManagerWeb.Endpoint do
-  
-  
   @moduledoc """
-  Phoenix endpoint configuration.
-  Handles HTTP requests, WebSocket connections, and static file serving.
+  Ponto de entrada de requisições HTTP e WebSockets do Phoenix Framework.
+
+  Configura toda a pipeline (plug) pela qual uma requisição passa antes de chegar ao roteador.
+  Integra-se fortemente aos canais de comunicação (Channels e LiveView) permitindo o chat ao vivo e dashboards em tempo real.
+  Aqui é onde o socket `/live` (LiveView) e `/socket` (Channels) são definidos e onde os tokens de sessão são interceptados e autenticados.
   """
   use Phoenix.Endpoint, otp_app: :event_manager
 

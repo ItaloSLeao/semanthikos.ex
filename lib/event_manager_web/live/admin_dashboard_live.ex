@@ -1,10 +1,11 @@
 defmodule EventManagerWeb.AdminDashboardLive do
   @moduledoc """
-  LiveView for admin dashboard with system-wide statistics.
+  Dashboard em tempo real para os Administradores, via Phoenix LiveView.
+
+  Exibe métricas, estado do sistema e eventos de forma reativa, sem a necessidade de F5 pelo usuário.
+  Mantém uma conexão WebSocket ativa.
   """
   use EventManagerWeb, :live_view
-
-  
 
   @impl true
   def mount(_params, _session, socket) do

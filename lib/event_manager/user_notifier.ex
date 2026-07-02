@@ -1,4 +1,11 @@
 defmodule EventManager.UserNotifier do
+  @moduledoc """
+  Módulo `EventManager.UserNotifier`.
+
+  Faz parte da estrutura base do Event Manager, localizado em `event_manager/user_notifier.ex`.
+  Define lógicas, componentes ou rotas específicas dessa camada.
+  Para detalhes mais profundos, consulte a documentação da arquitetura central (`EventManager.Core` e `EventManagerWeb.Router`).
+  """
   import Swoosh.Email
   alias EventManager.Mailer
 

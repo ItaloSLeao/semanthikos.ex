@@ -1,6 +1,4 @@
 defmodule EventManagerWeb.Gettext do
-  
-  
   @moduledoc """
   Internationalization module for translations.
   """

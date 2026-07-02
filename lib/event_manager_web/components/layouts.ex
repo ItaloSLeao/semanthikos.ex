@@ -1,6 +1,4 @@
 defmodule EventManagerWeb.Layouts do
-  
-  
   @moduledoc """
   Layout components for the application.
   """

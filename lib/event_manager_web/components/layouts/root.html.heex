@@ -6,7 +6,7 @@
     <meta name="csrf-token" content={get_csrf_token()} />
     <meta name="description" content="Sistema de Gerenciamento de Eventos Acadêmicos" />
 
-    <title>Semanthikos — <%= assigns[:page_title] || "Eventos" %></title>
+    <title>Semantikos — <%= assigns[:page_title] || "Eventos" %></title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -138,18 +138,25 @@
       .input-field {
         width: 100%;
         padding: 0.75rem 1rem;
-        background-color: transparent !important;
-        border: 1px solid var(--border-color) !important;
-        color: var(--text-primary) !important;
+        background-color: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
         border-radius: 8px;
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
-        font-size: 0.85rem !important;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 0.85rem;
         transition: all 0.2s ease;
-        box-shadow: none !important;
+        box-shadow: none;
+      }
+      .input-field:-webkit-autofill,
+      .input-field:-webkit-autofill:hover, 
+      .input-field:-webkit-autofill:focus, 
+      .input-field:-webkit-autofill:active {
+        transition: background-color 5000s ease-in-out 0s !important;
+        -webkit-text-fill-color: var(--text-primary) !important;
       }
       .input-field:focus {
-        border-color: var(--primary) !important;
-        box-shadow: 0 0 0 3px var(--primary-glow) !important;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-glow);
         outline: none;
       }
 

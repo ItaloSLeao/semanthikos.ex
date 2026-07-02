@@ -46,11 +46,19 @@ defmodule EventManagerWeb.EventController do
 
     case EventManager.Core.register_for_event(event_id_int, user.id) do
       {:ok, _registration} ->
-        conn |> put_flash(:info, "Inscrição realizada com sucesso!") |> redirect(to: ~p"/events/#{event_id}")
+        conn
+        |> put_flash(:info, "Inscrição realizada com sucesso!")
+        |> redirect(to: ~p"/events/#{event_id}")
+
       {:error, :no_seats_available} ->
-        conn |> put_flash(:error, "Evento está cheio. Não há mais vagas disponíveis.") |> redirect(to: ~p"/events/#{event_id}")
+        conn
+        |> put_flash(:error, "Evento está cheio. Não há mais vagas disponíveis.")
+        |> redirect(to: ~p"/events/#{event_id}")
+
       {:error, _} ->
-        conn |> put_flash(:error, "Erro ao realizar inscrição. Tente novamente.") |> redirect(to: ~p"/events/#{event_id}")
+        conn
+        |> put_flash(:error, "Erro ao realizar inscrição. Tente novamente.")
+        |> redirect(to: ~p"/events/#{event_id}")
     end
   end
 
@@ -60,9 +68,14 @@ defmodule EventManagerWeb.EventController do
 
     case EventManager.Core.cancel_registration(event_id_int, user.id) do
       {:ok, :cancelled} ->
-        conn |> put_flash(:info, "Inscrição cancelada com sucesso.") |> redirect(to: ~p"/events/#{event_id}")
+        conn
+        |> put_flash(:info, "Inscrição cancelada com sucesso.")
+        |> redirect(to: ~p"/events/#{event_id}")
+
       {:error, :not_found} ->
-        conn |> put_flash(:error, "Inscrição não encontrada.") |> redirect(to: ~p"/events/#{event_id}")
+        conn
+        |> put_flash(:error, "Inscrição não encontrada.")
+        |> redirect(to: ~p"/events/#{event_id}")
     end
   end
 
@@ -91,12 +104,21 @@ defmodule EventManagerWeb.EventController do
     end
   end
 
-  def mark_attendance(conn, %{"event_id" => event_id, "registration_id" => registration_id, "attended" => attended}) do
+  def mark_attendance(conn, %{
+        "event_id" => event_id,
+        "registration_id" => registration_id,
+        "attended" => attended
+      }) do
     case EventManager.Core.mark_attendance(registration_id, attended == "true") do
       {:ok, _} ->
-        conn |> put_flash(:info, "Presença atualizada com sucesso.") |> redirect(to: ~p"/speaker/events/#{event_id}/attendees")
+        conn
+        |> put_flash(:info, "Presença atualizada com sucesso.")
+        |> redirect(to: ~p"/speaker/events/#{event_id}/attendees")
+
       {:error, _} ->
-        conn |> put_flash(:error, "Erro ao atualizar presença.") |> redirect(to: ~p"/speaker/events/#{event_id}/attendees")
+        conn
+        |> put_flash(:error, "Erro ao atualizar presença.")
+        |> redirect(to: ~p"/speaker/events/#{event_id}/attendees")
     end
   end
 
@@ -106,8 +128,9 @@ defmodule EventManagerWeb.EventController do
 
     if user.role == :admin or event.speaker_id == user.id do
       count = EventManager.Services.generate_event_certificates(event_id)
-      conn 
-      |> put_flash(:info, "#{count} certificados gerados com sucesso.") 
+
+      conn
+      |> put_flash(:info, "#{count} certificados gerados com sucesso.")
       |> redirect(to: ~p"/speaker/events/#{event_id}/attendees")
     else
       conn |> put_flash(:error, "Sem permissão.") |> redirect(to: ~p"/")

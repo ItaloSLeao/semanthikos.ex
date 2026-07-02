@@ -8,11 +8,15 @@ defmodule EventManagerWeb.AuthController do
   alias EventManagerWeb.UserAuth
 
   # Aplica tela cheia (sem navbar) para login E registro
-  plug :put_layout, [html: false] when action in [:new_session, :create_session, :new_registration, :create_registration]
+  plug :put_layout,
+       [html: false]
+       when action in [:new_session, :create_session, :new_registration, :create_registration]
 
   # --- Registration ---
   def new_registration(conn, _params) do
-    changeset = EventManager.Schemas.User.registration_changeset(%EventManager.Schemas.User{}, %{})
+    changeset =
+      EventManager.Schemas.User.registration_changeset(%EventManager.Schemas.User{}, %{})
+
     render(conn, "registration_new.html", changeset: changeset)
   end
 
@@ -30,7 +34,7 @@ defmodule EventManagerWeb.AuthController do
 
   def new_session(conn, _params) do
     if conn.assigns[:current_user] do
-      redirect(conn, to: ~p"/events")
+      redirect(conn, to: ~p"/")
     else
       conn
       |> put_layout(html: false)
@@ -59,7 +63,10 @@ defmodule EventManagerWeb.AuthController do
 
   def create_reset_password(conn, %{"user" => %{"email" => email}}) do
     if user = EventManager.Core.get_user_by_email(email) do
-      EventManager.Core.deliver_user_reset_password_instructions(user, &url(~p"/users/reset_password/#{&1}"))
+      EventManager.Core.deliver_user_reset_password_instructions(
+        user,
+        &url(~p"/users/reset_password/#{&1}")
+      )
     end
 
     conn
@@ -106,17 +113,20 @@ defmodule EventManagerWeb.AuthController do
   def update_settings(conn, %{"user" => user_params} = params) do
     user = conn.assigns.current_user
 
-    user_params = if upload = params["avatar"] do
-      upload_path = Path.join(:code.priv_dir(:event_manager), "static/uploads")
-      File.mkdir_p!(upload_path)
+    user_params =
+      if upload = params["avatar"] do
+        upload_path = Path.join(:code.priv_dir(:event_manager), "static/uploads")
+        File.mkdir_p!(upload_path)
 
-      filename = "#{user.id}-#{System.unique_integer([:positive])}#{Path.extname(upload.filename)}"
-      dest = Path.join(upload_path, filename)
-      File.cp!(upload.path, dest)
-      Map.put(user_params, "avatar_path", "/uploads/#{filename}")
-    else
-      user_params
-    end
+        filename =
+          "#{user.id}-#{System.unique_integer([:positive])}#{Path.extname(upload.filename)}"
+
+        dest = Path.join(upload_path, filename)
+        File.cp!(upload.path, dest)
+        Map.put(user_params, "avatar_path", "/uploads/#{filename}")
+      else
+        user_params
+      end
 
     case EventManager.Core.update_user_profile(user, user_params) do
       {:ok, _user} ->

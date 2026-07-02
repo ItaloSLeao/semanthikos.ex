@@ -6,42 +6,42 @@
       <h1 style="font-family:'DM Serif Display',serif; font-size:2rem; margin:0;">Dashboard em Tempo Real</h1>
     </div>
     <button phx-click="refresh" 
-            style="padding:11px 24px; background:var(--gold); color:var(--ink); border:none; border-radius:8px; font-weight:600; cursor:pointer; transition:opacity 0.2s;"
+            style="padding:11px 24px; background:var(--gold); color:var(--text-primary); border:none; border-radius:8px; font-weight:600; cursor:pointer; transition:opacity 0.2s;"
             onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
       Atualizar Agora
     </button>
   </div>
 
   <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:1.5rem; margin-bottom:3rem;">
-    <div style="background:white; border:1px solid #eae9e4; border-radius:12px; padding:1.5rem;">
-      <p style="font-size:0.8rem; text-transform:uppercase; color:var(--slate); margin:0 0 0.5rem; font-weight:600;">Total de Eventos</p>
-      <div style="font-family:'DM Serif Display',serif; font-size:2.5rem; color:var(--ink);"><%= @stats.system.total_events %></div>
+    <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:12px; padding:1.5rem;">
+      <p style="font-size:0.8rem; text-transform:uppercase; color:var(--text-muted); margin:0 0 0.5rem; font-weight:600;">Total de Eventos</p>
+      <div style="font-family:'DM Serif Display',serif; font-size:2.5rem; color:var(--text-primary);"><%= @stats.system.total_events %></div>
     </div>
-    <div style="background:white; border:1px solid #eae9e4; border-radius:12px; padding:1.5rem;">
-      <p style="font-size:0.8rem; text-transform:uppercase; color:var(--slate); margin:0 0 0.5rem; font-weight:600;">Participantes Totais</p>
-      <div style="font-family:'DM Serif Display',serif; font-size:2.5rem; color:var(--ink);"><%= @stats.system.total_users %></div>
+    <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:12px; padding:1.5rem;">
+      <p style="font-size:0.8rem; text-transform:uppercase; color:var(--text-muted); margin:0 0 0.5rem; font-weight:600;">Participantes Totais</p>
+      <div style="font-family:'DM Serif Display',serif; font-size:2.5rem; color:var(--text-primary);"><%= @stats.system.total_users %></div>
     </div>
-    <div style="background:white; border:1px solid #eae9e4; border-radius:12px; padding:1.5rem;">
-      <p style="font-size:0.8rem; text-transform:uppercase; color:var(--slate); margin:0 0 0.5rem; font-weight:600;">Inscrições</p>
+    <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:12px; padding:1.5rem;">
+      <p style="font-size:0.8rem; text-transform:uppercase; color:var(--text-muted); margin:0 0 0.5rem; font-weight:600;">Inscrições</p>
       <div style="font-family:'DM Serif Display',serif; font-size:2.5rem; color:var(--cyan);"><%= @stats.system.total_registrations %></div>
     </div>
-    <div style="background:white; border:1px solid #eae9e4; border-radius:12px; padding:1.5rem;">
-      <p style="font-size:0.8rem; text-transform:uppercase; color:var(--slate); margin:0 0 0.5rem; font-weight:600;">Próximos Eventos</p>
+    <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:12px; padding:1.5rem;">
+      <p style="font-size:0.8rem; text-transform:uppercase; color:var(--text-muted); margin:0 0 0.5rem; font-weight:600;">Próximos Eventos</p>
       <div style="font-family:'DM Serif Display',serif; font-size:2.5rem; color:var(--gold);"><%= @stats.system.upcoming_events %></div>
     </div>
   </div>
 
   <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem;">
-    <div style="background:white; border:1px solid #eae9e4; border-radius:12px; overflow:hidden;">
-      <div style="padding:1.5rem; border-bottom:1px solid #eae9e4; background:var(--smoke);">
+    <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:12px; overflow:hidden;">
+      <div style="padding:1.5rem; border-bottom:1px solid var(--border-color); background:var(--bg-surface-hover);">
         <h2 style="font-family:'DM Serif Display',serif; font-size:1.4rem; margin:0;">Top Eventos (Ocupação)</h2>
       </div>
       <table style="width:100%; border-collapse:collapse;">
         <tbody>
           <%= for event <- @stats.occupancy do %>
-            <tr style="border-bottom:1px solid #f5f4f0;">
-              <td style="padding:16px; font-size:0.9rem; font-weight:500; color:var(--ink);"><%= event.title %></td>
-              <td style="padding:16px; text-align:right; font-size:0.9rem; color:var(--slate);">
+            <tr style="border-bottom:1px solid var(--border-color);">
+              <td style="padding:16px; font-size:0.9rem; font-weight:500; color:var(--text-primary);"><%= event.title %></td>
+              <td style="padding:16px; text-align:right; font-size:0.9rem; color:var(--text-muted);">
                 <span style="color:var(--gold); font-weight:600;"><%= event.occupancy_rate %>%</span> 
                 (<%= event.registrations %>/<%= event.max_seats %>)
               </td>
@@ -51,16 +51,16 @@
       </table>
     </div>
 
-    <div style="background:white; border:1px solid #eae9e4; border-radius:12px; overflow:hidden;">
-      <div style="padding:1.5rem; border-bottom:1px solid #eae9e4; background:var(--smoke);">
+    <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:12px; overflow:hidden;">
+      <div style="padding:1.5rem; border-bottom:1px solid var(--border-color); background:var(--bg-surface-hover);">
         <h2 style="font-family:'DM Serif Display',serif; font-size:1.4rem; margin:0;">Participação por Curso</h2>
       </div>
       <table style="width:100%; border-collapse:collapse;">
         <tbody>
           <%= for course <- @stats.participation do %>
-            <tr style="border-bottom:1px solid #f5f4f0;">
-              <td style="padding:16px; font-size:0.9rem; font-weight:500; color:var(--ink);"><%= course.course %></td>
-              <td style="padding:16px; text-align:right; font-size:0.9rem; color:var(--slate);">
+            <tr style="border-bottom:1px solid var(--border-color);">
+              <td style="padding:16px; font-size:0.9rem; font-weight:500; color:var(--text-primary);"><%= course.course %></td>
+              <td style="padding:16px; text-align:right; font-size:0.9rem; color:var(--text-muted);">
                 <span style="font-weight:600;"><%= course.total_registrations %></span> inscritos
               </td>
             </tr>

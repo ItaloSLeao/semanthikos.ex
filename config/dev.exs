@@ -14,7 +14,8 @@ config :event_manager, EventManagerWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "MsewRPgkU7gCViZMekeCigaSDplRjk7irnmYrG4HIQWQ4vcqirbtap90QqTl1jHRmN7J5916hQpS7k5R9b4G6",
+  secret_key_base:
+    "MsewRPgkU7gCViZMekeCigaSDplRjk7irnmYrG4HIQWQ4vcqirbtap90QqTl1jHRmN7J5916hQpS7k5R9b4G6",
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline)]},
     tailwind: {Tailwind, :install_and_run, [:default, ~w()]}

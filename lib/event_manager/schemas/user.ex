@@ -35,7 +35,17 @@ defmodule EventManager.Schemas.User do
   """
   def registration_changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :password, :name, :role, :course, :department, :cpf, :birth_date, :registration_id])
+    |> cast(attrs, [
+      :email,
+      :password,
+      :name,
+      :role,
+      :course,
+      :department,
+      :cpf,
+      :birth_date,
+      :registration_id
+    ])
     |> validate_required([:email, :password, :name])
     |> validate_email()
     |> validate_password()
@@ -94,7 +104,15 @@ defmodule EventManager.Schemas.User do
   """
   def profile_changeset(user, attrs) do
     user
-    |> cast(attrs, [:name, :course, :department, :cpf, :birth_date, :registration_id, :avatar_path])
+    |> cast(attrs, [
+      :name,
+      :course,
+      :department,
+      :cpf,
+      :birth_date,
+      :registration_id,
+      :avatar_path
+    ])
     |> validate_required([:name])
     |> validate_length(:name, max: 100)
   end

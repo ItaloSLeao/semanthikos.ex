@@ -9,10 +9,11 @@ defmodule EventManagerWeb.EventChannel do
   def join("event:" <> event_id, _params, socket) do
     event = EventManager.Core.get_event!(event_id)
 
-    {:ok, %{
-      event_id: event_id,
-      remaining_seats: EventManager.Schemas.Event.remaining_seats(event)
-    }, socket}
+    {:ok,
+     %{
+       event_id: event_id,
+       remaining_seats: EventManager.Schemas.Event.remaining_seats(event)
+     }, socket}
   end
 
   @impl true

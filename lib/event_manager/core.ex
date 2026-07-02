@@ -1,5 +1,15 @@
 defmodule EventManager.Core do
-  @moduledoc "Core context consolidating Accounts and Events logic."
+  @moduledoc """
+  Gerente Principal do Event Manager.
+
+  Este módulo é o coração da camada de negócios (backend), responsável pelo contexto consolidado de Accounts (Autenticação, Usuários) e Events (CRUD de eventos, Inscrições).
+  Ele segue o padrão de "Gerentes de Departamento" para consolidar lógicas relacionadas e reduzir boilerplate.
+
+  Principais responsabilidades:
+  - Criação e validação de usuários.
+  - Publicação, edição e cancelamento de eventos.
+  - Lida com a regra de negócio central, garantindo isolamento da camada Web.
+  """
   import Ecto.Query
   alias EventManager.Repo
   alias EventManager.Schemas.{User, UserToken, Event, Registration}
@@ -9,7 +19,8 @@ defmodule EventManager.Core do
 
   def get_user_by_email(email) when is_binary(email), do: Repo.get_by(User, email: email)
 
-  def get_user_by_email_and_password(email, password) when is_binary(email) and is_binary(password) do
+  def get_user_by_email_and_password(email, password)
+      when is_binary(email) and is_binary(password) do
     user = Repo.get_by(User, email: email)
     if User.valid_password?(user, password), do: user
   end
@@ -42,7 +53,9 @@ defmodule EventManager.Core do
 
   def change_user_email(user, attrs \\ %{}), do: User.email_changeset(user, attrs)
   def update_user_profile(user, attrs), do: user |> User.profile_changeset(attrs) |> Repo.update()
-  def update_user_password(user, attrs), do: user |> User.password_changeset(attrs) |> Repo.update()
+
+  def update_user_password(user, attrs),
+    do: user |> User.password_changeset(attrs) |> Repo.update()
 
   def generate_user_session_token(user) do
     {token, user_token} = UserToken.build_session_token(user)
@@ -61,7 +74,9 @@ defmodule EventManager.Core do
     do: UserToken.by_token_and_context_query(token, "session") |> Repo.delete_all()
 
   def deliver_user_confirmation_instructions(user, confirmation_url_fun) do
-    if user.confirmed_at, do: {:error, :already_confirmed}, else: do_confirm(user, confirmation_url_fun)
+    if user.confirmed_at,
+      do: {:error, :already_confirmed},
+      else: do_confirm(user, confirmation_url_fun)
   end
 
   defp do_confirm(user, url_fun) do
@@ -113,11 +128,14 @@ defmodule EventManager.Core do
   end
 
   def get_event!(id), do: Event |> Repo.get!(id) |> Repo.preload([:speaker, :registrations])
-  def get_event_with_registrations!(id), do: Event |> Repo.get!(id) |> Repo.preload([:speaker, registrations: [:user]])
+
+  def get_event_with_registrations!(id),
+    do: Event |> Repo.get!(id) |> Repo.preload([:speaker, registrations: [:user]])
 
   def create_event(attrs), do: %Event{} |> Event.changeset(attrs) |> Repo.insert()
   def update_event(%Event{} = event, attrs), do: event |> Event.changeset(attrs) |> Repo.update()
   def publish_event(%Event{} = event), do: event |> Event.publish_changeset() |> Repo.update()
+
   def cancel_event(%Event{} = event) do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:event, Event.cancel_changeset(event))
@@ -128,6 +146,7 @@ defmodule EventManager.Core do
         "event_cancelled",
         %{title: cancelled_event.title, reason: "Evento cancelado pela administração"}
       )
+
       {:ok, :notified}
     end)
     |> Repo.transaction()
@@ -138,27 +157,36 @@ defmodule EventManager.Core do
   end
 
   def delete_event(%Event{} = event) do
-    if EventManager.Schemas.Event.registration_count(event) > 0, do: {:error, :has_registrations}, else: Repo.delete(event)
+    if EventManager.Schemas.Event.registration_count(event) > 0,
+      do: {:error, :has_registrations},
+      else: Repo.delete(event)
   end
 
   def register_for_event(event_id, user_id) do
     event_id = parse_id(event_id)
     user_id = parse_id(user_id)
-    Repo.reserve_seat(event_id, user_id) |> case do
+
+    Repo.reserve_seat(event_id, user_id)
+    |> case do
       {:ok, %{registration: reg}} ->
         EventManagerWeb.Endpoint.broadcast("event:#{event_id}", "registration_updated", %{
-          event_id: event_id, remaining_seats: Event.remaining_seats(get_event!(event_id))})
+          event_id: event_id,
+          remaining_seats: Event.remaining_seats(get_event!(event_id))
+        })
+
         {:ok, reg}
-      error -> error
+
+      error ->
+        error
     end
   end
 
   def cancel_registration(event_id, user_id) do
     event_id = parse_id(event_id)
     user_id = parse_id(user_id)
-    
+
     registration = Repo.get_by(Registration, event_id: event_id, user_id: user_id)
-    
+
     if registration do
       Ecto.Multi.new()
       |> Ecto.Multi.update(:cancel, Registration.cancel_changeset(registration))
@@ -173,9 +201,14 @@ defmodule EventManager.Core do
       |> case do
         {:ok, _} ->
           EventManagerWeb.Endpoint.broadcast("event:#{event_id}", "registration_updated", %{
-            event_id: event_id, remaining_seats: Event.remaining_seats(get_event!(event_id))})
+            event_id: event_id,
+            remaining_seats: Event.remaining_seats(get_event!(event_id))
+          })
+
           {:ok, :cancelled}
-        error -> error
+
+        error ->
+          error
       end
     else
       {:error, :not_found}
@@ -208,33 +241,66 @@ defmodule EventManager.Core do
 
   def mark_attendance(reg_id, attended) do
     reg_id = parse_id(reg_id)
-    Repo.get!(Registration, reg_id) |> Registration.attendance_changeset(%{attended: attended}) |> Repo.update()
+
+    Repo.get!(Registration, reg_id)
+    |> Registration.attendance_changeset(%{attended: attended})
+    |> Repo.update()
   end
 
   def list_user_registrations(user_id) do
     user_id = parse_id(user_id)
-    from(r in Registration, where: r.user_id == ^user_id and r.status != :cancelled, preload: [event: [:speaker]], order_by: [desc: r.registered_at]) |> Repo.all()
+
+    from(r in Registration,
+      where: r.user_id == ^user_id and r.status != :cancelled,
+      preload: [event: [:speaker]],
+      order_by: [desc: r.registered_at]
+    )
+    |> Repo.all()
   end
 
   def list_event_registrations(event_id) do
     event_id = parse_id(event_id)
-    from(r in Registration, where: r.event_id == ^event_id and r.status != :cancelled, preload: [:user], order_by: [asc: r.registered_at]) |> Repo.all()
+
+    from(r in Registration,
+      where: r.event_id == ^event_id and r.status != :cancelled,
+      preload: [:user],
+      order_by: [asc: r.registered_at]
+    )
+    |> Repo.all()
   end
 
   def get_event_stats(event_id) do
     event_id = parse_id(event_id)
     event = get_event!(event_id)
-    regs = from(r in Registration, where: r.event_id == ^event_id and r.status == :confirmed) |> Repo.aggregate(:count, :id)
-    waitlisted = from(r in Registration, where: r.event_id == ^event_id and r.status == :waitlisted) |> Repo.aggregate(:count, :id)
-    attended = from(r in Registration, where: r.event_id == ^event_id and r.attended == true) |> Repo.aggregate(:count, :id)
-    
-    occupancy = if event.max_seats > 0, do: Float.round(regs / event.max_seats * 100, 2), else: 0.0
 
-    %{event: event, total_registrations: regs, waitlisted: waitlisted, total_attended: attended,
-      remaining_seats: max(0, event.max_seats - regs), occupancy_rate: occupancy}
+    regs =
+      from(r in Registration, where: r.event_id == ^event_id and r.status == :confirmed)
+      |> Repo.aggregate(:count, :id)
+
+    waitlisted =
+      from(r in Registration, where: r.event_id == ^event_id and r.status == :waitlisted)
+      |> Repo.aggregate(:count, :id)
+
+    attended =
+      from(r in Registration, where: r.event_id == ^event_id and r.attended == true)
+      |> Repo.aggregate(:count, :id)
+
+    occupancy =
+      if event.max_seats > 0, do: Float.round(regs / event.max_seats * 100, 2), else: 0.0
+
+    %{
+      event: event,
+      total_registrations: regs,
+      waitlisted: waitlisted,
+      total_attended: attended,
+      remaining_seats: max(0, event.max_seats - regs),
+      occupancy_rate: occupancy
+    }
   end
 
-  def search_events(term) when is_binary(term), do: Repo.search_events(term) |> Repo.all() |> Repo.preload([:speaker])
+  def search_events(term) when is_binary(term),
+    do: Repo.search_events(term) |> Repo.all() |> Repo.preload([:speaker])
+
   def search_events(_), do: {:error, :invalid_query}
 
   defp filter_status(q, nil), do: q
@@ -248,6 +314,7 @@ defmodule EventManager.Core do
   defp order_events(q, {:title, :asc}), do: order_by(q, [e], asc: e.title)
   defp order_events(q, _), do: order_by(q, [e], asc: e.date)
   defp paginate(q, nil, _), do: q
+
   defp paginate(q, page, per_page) do
     offset = (max(page, 1) - 1) * per_page
     q |> limit(^per_page) |> offset(^offset)

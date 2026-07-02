@@ -1,6 +1,4 @@
 defmodule EventManagerWeb.ErrorJSON do
-  
-  
   @moduledoc """
   Error JSON rendering module.
   Handles API error responses.

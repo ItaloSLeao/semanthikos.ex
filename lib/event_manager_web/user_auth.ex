@@ -31,15 +31,20 @@ defmodule EventManagerWeb.UserAuth do
 
   def require_admin(conn, _opts) do
     user = conn.assigns[:current_user]
+
     if user && User.admin?(user) do
       conn
     else
-      conn |> put_flash(:error, "Acesso restrito a administradores.") |> redirect(to: ~p"/") |> halt()
+      conn
+      |> put_flash(:error, "Acesso restrito a administradores.")
+      |> redirect(to: ~p"/")
+      |> halt()
     end
   end
 
   def require_speaker(conn, _opts) do
     user = conn.assigns[:current_user]
+
     if user && (User.admin?(user) || User.speaker?(user)) do
       conn
     else
@@ -52,6 +57,7 @@ defmodule EventManagerWeb.UserAuth do
       {token, conn}
     else
       conn = fetch_cookies(conn, signed: ["user_token"])
+
       if token = conn.cookies["user_token"] do
         {token, put_session(conn, :user_token, token)}
       else
@@ -70,7 +76,7 @@ defmodule EventManagerWeb.UserAuth do
     |> put_session(:user_token, token)
     |> put_session(:live_socket_id, "user_sessions:#{user.id}")
     |> maybe_write_remember_me_cookie(token, params)
-    |> redirect(to: user_return_to || ~p"/events")
+    |> redirect(to: user_return_to || ~p"/")
   end
 
   defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}) do
@@ -109,7 +115,13 @@ defmodule EventManagerWeb.UserAuth do
   def on_mount(:mount_current_user, _params, session, socket) do
     case session do
       %{"user_token" => user_token} ->
-        {:cont, Phoenix.Component.assign(socket, :current_user, EventManager.Core.get_user_by_session_token(user_token))}
+        {:cont,
+         Phoenix.Component.assign(
+           socket,
+           :current_user,
+           EventManager.Core.get_user_by_session_token(user_token)
+         )}
+
       _ ->
         {:cont, Phoenix.Component.assign(socket, :current_user, nil)}
     end
@@ -119,11 +131,13 @@ defmodule EventManagerWeb.UserAuth do
     case session do
       %{"user_token" => user_token} ->
         user = EventManager.Core.get_user_by_session_token(user_token)
+
         if user do
           {:cont, Phoenix.Component.assign(socket, :current_user, user)}
         else
           {:halt, Phoenix.LiveView.redirect(socket, to: ~p"/users/log_in")}
         end
+
       _ ->
         {:halt, Phoenix.LiveView.redirect(socket, to: ~p"/users/log_in")}
     end

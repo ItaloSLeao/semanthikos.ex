@@ -4,7 +4,6 @@ defmodule EventManagerWeb.CertificateController do
   """
   use EventManagerWeb, :controller
 
-
   def index(conn, _params) do
     user = conn.assigns.current_user
     certificates = EventManager.Services.list_user_certificates(user.id)
@@ -31,11 +30,16 @@ defmodule EventManagerWeb.CertificateController do
 
     if certificate.user_id == user.id do
       # Entrega a versão em HTML, mas injeta um script para abrir a caixa de "Salvar como PDF" do navegador
-      html_with_print = certificate.pdf_data <> "\n<script>window.onload = function() { setTimeout(function() { window.print(); }, 500); }</script>"
+      html_with_print =
+        certificate.pdf_data <>
+          "\n<script>window.onload = function() { setTimeout(function() { window.print(); }, 500); }</script>"
 
       conn
       |> put_resp_content_type("text/html")
-      |> put_resp_header("content-disposition", "inline; filename=\"certificado-#{certificate.certificate_number}.html\"")
+      |> put_resp_header(
+        "content-disposition",
+        "inline; filename=\"certificado-#{certificate.certificate_number}.html\""
+      )
       |> send_resp(200, html_with_print)
     else
       conn

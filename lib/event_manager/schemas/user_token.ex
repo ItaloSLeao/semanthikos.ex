@@ -31,7 +31,8 @@ defmodule EventManager.Schemas.UserToken do
     query =
       from t in __MODULE__,
         where: t.context == "session",
-        where: t.token == ^:crypto.hash(@hash_algorithm, Base.url_decode64!(token, padding: false)),
+        where:
+          t.token == ^:crypto.hash(@hash_algorithm, Base.url_decode64!(token, padding: false)),
         join: user in assoc(t, :user),
         select: user
 
@@ -57,7 +58,8 @@ defmodule EventManager.Schemas.UserToken do
     query =
       from t in __MODULE__,
         where: t.context == ^context,
-        where: t.token == ^:crypto.hash(@hash_algorithm, Base.url_decode64!(token, padding: false)),
+        where:
+          t.token == ^:crypto.hash(@hash_algorithm, Base.url_decode64!(token, padding: false)),
         where: t.inserted_at > ago(24, "hour")
 
     from t in query, join: user in assoc(t, :user), select: user

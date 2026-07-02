@@ -1,4 +1,10 @@
 defmodule EventManagerWeb.Router do
+  @moduledoc """
+  Roteador central do sistema (Mapeamento de URLs para Controllers/LiveViews).
+
+  Organiza as rotas em pipelines distintas (browser, api, admin).
+  Implementa controle de acesso (RBAC - Role-Based Access Control) através de plugs (`:require_admin`, `:require_speaker`, `:require_authenticated_user`).
+  """
   use EventManagerWeb, :router
   import EventManagerWeb.UserAuth
 
@@ -48,7 +54,8 @@ defmodule EventManagerWeb.Router do
     post "/events/:id/register", EventController, :register
     delete "/events/:id/register", EventController, :cancel_registration
 
-    live_session :authenticated_user, on_mount: [{EventManagerWeb.UserAuth, :ensure_authenticated}] do
+    live_session :authenticated_user,
+      on_mount: [{EventManagerWeb.UserAuth, :ensure_authenticated}] do
       live "/", HomeLive, :index
       live "/events/:id/chat", EventChatLive
       live "/events/:id/dashboard", EventDashboardLive

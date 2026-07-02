@@ -1,3 +1,16 @@
+/**
+ * app.js
+ * 
+ * Este arquivo atua como o ponto de entrada principal para a interface front-end do projeto Event Manager.
+ * Ele inicializa a comunicação cliente-servidor através de WebSockets e gerencia as conexões do Phoenix LiveView e Channels.
+ * 
+ * Funcionalidades Principais:
+ * - Define componentes customizados (ex: LocalTime).
+ * - Configura e conecta o `LiveSocket` que permite que o Phoenix LiveView atualize a página em tempo real.
+ * - Registra `Hooks` do JavaScript para o LiveView (como o `ChatScroll` que mantém o scroll das mensagens do chat embaixo).
+ * - Conecta o socket padrão (`/socket`) usado pelos canais normais do Phoenix, passando o token do usuário.
+ * - Este arquivo é essencial para permitir o funcionamento da funcionalidade mais chamativa: os chats ao vivo em tempo real.
+ */
 // Import Phoenix dependencies
 import "phoenix_html"
 import {Socket} from "phoenix"

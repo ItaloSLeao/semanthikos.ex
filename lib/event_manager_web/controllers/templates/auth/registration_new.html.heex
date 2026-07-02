@@ -76,6 +76,15 @@
         transition: var(--transition);
     }
 
+    .input-field:-webkit-autofill,
+    .input-field:-webkit-autofill:hover, 
+    .input-field:-webkit-autofill:focus, 
+    .input-field:-webkit-autofill:active {
+        transition: background-color 5000s ease-in-out 0s !important;
+        -webkit-text-fill-color: var(--ink) !important;
+        font-family: 'DM Sans', sans-serif !important;
+    }
+
     .input-field:focus,
     .input-field:not(:placeholder-shown) {
         border-color: var(--gold);
@@ -158,7 +167,7 @@
                     <path d="M9 2L11.2 7H16.5L12.3 10.3L13.8 15.5L9 12.5L4.2 15.5L5.7 10.3L1.5 7H6.8L9 2Z" fill="#0d0f1a"/>
                 </svg>
             </div>
-            <div class="logo-text">Seman<span style="color: var(--gold);">thikos</span></div>
+            <div class="logo-text">Seman<span style="color: var(--gold);">tikos</span></div>
         </a>
 
         <div class="auth-header">
